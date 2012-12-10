@@ -1,16 +1,17 @@
+var chart;
 jQuery(function($) {
 
     Highcharts.setOptions({
-         chart: {
-             style: {
-                 fontFamily: 'Arial',
-                 fontWeight: '400',
-                 fontSize: '10pt'
-             }
-         }
-     });
+        chart: {
+            style: {
+                fontFamily: 'Arial',
+                fontWeight: '400',
+                fontSize: '10pt'
+            }
+        }
+    });
      
-    var chart = window.chart = new Highcharts.Chart({
+    chart = new Highcharts.Chart({
         chart: {
             renderTo: 'chart',
             type: 'line',
@@ -30,21 +31,20 @@ jQuery(function($) {
             lineColor: '#cccccc',
             tickColor: '#cccccc',
             labels: {
-            formatter: function() {
-                return Highcharts.dateFormat('%Y', this.value);
+                formatter: function() {
+                    return Highcharts.dateFormat('%Y', this.value);
                 },
-            step: 2,
-            overflow: 'justify',
-            y: 20,
-            style: {
-                  color: '#000000',
-                  fontSize: '8pt',
-                  fontWeight: '400' 
+                step: 2,
+                overflow: 'justify',
+                y: 20,
+                style: {
+                    color: '#000000',
+                    fontSize: '8pt',
+                    fontWeight: '400' 
                 },
-                      
-            },              
+            },
             title: {
-            text: null
+                text: null
             },
         },
         
@@ -57,9 +57,9 @@ jQuery(function($) {
             title: {
                 text: 'Difference from 1951-1980 average (°C)',
                 style: {
-                     color: '#000000',
-                     fontSize: '9pt',
-                     fontWeight: '400'
+                    color: '#000000',
+                    fontSize: '9pt',
+                    fontWeight: '400'
                 }
             },
             labels: {
@@ -67,9 +67,9 @@ jQuery(function($) {
                     return this.value; // clean, unformatted number for ice extent
                 },
                 style: {
-                     color: '#000000',
-                     fontSize: '9pt',
-                     fontWeight: '400'
+                    color: '#000000',
+                    fontSize: '9pt',
+                    fontWeight: '400'
                 },
                 y: 6
             }
@@ -80,10 +80,10 @@ jQuery(function($) {
             align: 'center',
             x: 18,
             style: {
-                     color: '#000000',
-                     fontSize: '14px',
-                     fontWeight: '400',
-                }
+                color: '#000000',
+                fontSize: '14px',
+                fontWeight: '400',
+            }
         },
         
         labels: {
@@ -93,7 +93,7 @@ jQuery(function($) {
                     top: '160px',
                     left: '20px',
                     color: '#b22222'
-                 },
+                },
             }]
         },
         
