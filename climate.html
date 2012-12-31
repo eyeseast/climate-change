@@ -76,7 +76,7 @@
     <script type="text/javascript">
     var interaction, map, template
       , tooltip = wax.tooltip()
-      , url = "http://a.tiles.mapbox.com/v3/mapbox.world-light,chrisamico.climate.jsonp";
+      , url = "http://a.tiles.mapbox.com/v3/newscientist26102012.climate-prototype.jsonp";
     
     wax.tilejson(url, function(tilejson) {
         // template = _.template($('#template').html());
@@ -97,12 +97,17 @@
               on: function(e) {
                 var data = window.data = e.data;
 
-                if (data.temps) {
-                  var temps = window.temps = JSON.parse(data.temps);
+                if (data.annual) {
+                  var temps = window.temps = JSON.parse(data.annual),
+                      fives = JSON.parse(data.fiveyear);
+                  /***
                   _.each(temps, function(d, i, list) {
                     if (d === 9999) list[i] = null;
                   });
+                  ***/
                   annual.setData(temps, true);
+                  fiveyear.setData(fives, true);
+                  // chart.redraw();
                 }
               },
               off: function(e) {}

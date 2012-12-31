@@ -1,6 +1,12 @@
 var chart;
 jQuery(function($) {
 
+    var colors = {
+        global5: '#b22222',
+        local5 : '#2b2b2b',
+        local1 : '#808080'
+    }
+
     Highcharts.setOptions({
         chart: {
             style: {
@@ -49,8 +55,8 @@ jQuery(function($) {
         },
         
         yAxis: {
-            max: 3,
-            min:-3,
+            max: 3.5,
+            min:-3.5,
             tickInterval: 1,
             lineColor: '#cccccc',
             lineWidth: 1,
@@ -87,14 +93,32 @@ jQuery(function($) {
         },
         
         labels: {
-            items: [{
-                html: 'Five-year average',
+            items: [
+            {
+                html: 'Five-year global average',
                 style: {
-                    top: '160px',
+                    top: '210px',
                     left: '20px',
-                    color: '#b22222'
-                },
-            }]
+                    color: colors.global5
+                }
+            },
+            {
+                html: 'Local five-year average',
+                style: {
+                    top: '190px',
+                    left: '20px',
+                    color: colors.local5
+                }
+            },
+            {
+                html: 'Local annual average',
+                style: {
+                    top: '170px',
+                    left: '20px',
+                    color: colors.local1
+                }
+            }
+            ]
         },
         
         plotOptions: {
@@ -126,23 +150,37 @@ jQuery(function($) {
         },
                           
         series: [
-        {
-            name: 'Five-year global average',
-            data: GLOBAL_FIVE_YEAR,   
-            pointStart: Date.UTC(1880, 6, 1),
-            pointInterval: 365.25 * 24 * 3600 * 1000, // one year
-            color: '#b22222'
-        },
+        // local annual
         {
             name: 'Annual average',
             data: GLOBAL_ONE_YEAR,
             pointStart: Date.UTC(1880, 6, 1),
             pointInterval: 365.25 * 24 * 3600 * 1000,// one year
-            color: '#808080',
+            color: colors.local1, // '#808080',
             lineWidth: 1
+        },
+
+        // local five-year
+        {
+            name: 'Five-year average',
+            data: GLOBAL_ONE_YEAR,
+            pointStart: Date.UTC(1880, 6, 1),
+            pointInterval: 365.25 * 24 * 3600 * 1000,// one year
+            color: colors.local5, // '#2b2b2b',
+            lineWidth: 1.5
+        },
+
+        // global five-year
+        {
+            name: 'Five-year global average',
+            data: GLOBAL_FIVE_YEAR,   
+            pointStart: Date.UTC(1880, 6, 1),
+            pointInterval: 365.25 * 24 * 3600 * 1000, // one year
+            color: colors.global5 // '#b22222'
         }
         ]
     });
     
-    window.annual = chart.series[1];
+    window.annual = chart.series[0];
+    window.fiveyear = chart.series[1];
 });
