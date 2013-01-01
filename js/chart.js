@@ -1,5 +1,4 @@
-var chart;
-jQuery(function($) {
+function createChart() {
 
     var colors = {
         global5: '#b22222',
@@ -17,7 +16,7 @@ jQuery(function($) {
         }
     });
      
-    chart = new Highcharts.Chart({
+    var chart = new Highcharts.Chart({
         chart: {
             renderTo: 'chart',
             type: 'line',
@@ -181,6 +180,8 @@ jQuery(function($) {
         ]
     });
     
-    window.annual = chart.series[0];
-    window.fiveyear = chart.series[1];
-});
+    chart.annual = chart.series[0];
+    chart.fiveyear = chart.series[1];
+
+    return chart;
+};
