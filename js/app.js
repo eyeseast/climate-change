@@ -35,21 +35,7 @@ var App = Backbone.View.extend({
         this.grid = new Grid();
         this.map = this.createMap(url, this.setupMap);
 
-    },
-
-    setupEvents: function() {
-        // setup events
-        var chart = this.highchart;
-
-        // re-render chart when lat or lng changes
-        this.grid.on('change:lat_id', this.plot);
-        this.grid.on('change:lng_id', this.plot);
-
-        // redraw the chart on zoom (chasing a weird bug)
-        this.map.on('zoomend', function() {
-            chart.redraw();
-        });
-
+        return this;
     },
 
     locate: function(e) {
@@ -97,13 +83,8 @@ var App = Backbone.View.extend({
             .on({
                 
                 on: function(e) {
-                    grid.set({
-                        lat_id: e.data.lat_id,
-                        lng_id: e.data.lng_id,
-                        latest: e.data.latest,
-                        annual: JSON.parse(e.data.annual),
-                        fiveyear: JSON.parse(e.data.fiveyear)
-                    });
+                    app.highchart.annual.setData(JSON.parse(e.data.annual));
+                    app.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear));
                 },
                 
                 off: function() {}
