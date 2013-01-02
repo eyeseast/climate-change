@@ -40,7 +40,16 @@ var App = Backbone.View.extend({
 
     locate: function(e) {
         e.preventDefault();
-        console.log('Clicked locate');
+
+        var map = this.map;
+        map.locate({ setView: true });
+
+        // this is mostly here for debugging
+        map.on('locationfound', function(e) {
+            L.marker(e.latlng, { radius: e.accuracy / 2 })
+                .addTo(map)
+                .bindPopup('You are here.');
+        });
     },
 
     plot: function() {
@@ -52,12 +61,13 @@ var App = Backbone.View.extend({
     },
 
     createMap: function(url, cb) {
-        var map = L.map('map');
+        var map = L.map('map')
+          , app = this;
         wax.tilejson(url, function(tilejson) {
-            // template = _.template($('#template').html());
+            app.tilejson = tilejson;
 
             tilejson.minzoom = 0;
-            tilejson.maxzoom = 7;
+            tilejson.maxzoom = 6;
             map.addLayer(new wax.leaf.connector(tilejson))
                 .fitWorld();
 
@@ -74,8 +84,6 @@ var App = Backbone.View.extend({
     setupMap: function(map, tilejson) {
         var grid = this.grid
           , app = this;
-
-        // this.map = map;
 
         this.interaction = wax.leaf.interaction()
             .map(map)
