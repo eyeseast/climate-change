@@ -22,17 +22,42 @@ var Grid = Backbone.Model.extend({
 
 var App = Backbone.View.extend({
 
-    initialize: function(options) {
-        _.bindAll(this);
-        this.highchart = createChart();
-        this.grid = new Grid();
-        this.grid.on('change:lat_id', this.redrawMap);
-        this.grid.on('change:lng_id', this.redrawMap);
-
-        createMap(url, this.setupMap);
+    events: {
+        "click #location" : "locate"
     },
 
-    redrawMap: function() {
+    initialize: function(options) {
+        _.bindAll(this);
+        this.setElement('body');
+
+        // create big moving parts
+        this.highchart = createChart();
+        this.grid = new Grid();
+        this.map = this.createMap(url, this.setupMap);
+
+    },
+
+    setupEvents: function() {
+        // setup events
+        var chart = this.highchart;
+
+        // re-render chart when lat or lng changes
+        this.grid.on('change:lat_id', this.plot);
+        this.grid.on('change:lng_id', this.plot);
+
+        // redraw the chart on zoom (chasing a weird bug)
+        this.map.on('zoomend', function() {
+            chart.redraw();
+        });
+
+    },
+
+    locate: function(e) {
+        e.preventDefault();
+        console.log('Clicked locate');
+    },
+
+    plot: function() {
         var annual = this.highchart.annual
           , fiveyear = this.highchart.fiveyear;
 
@@ -40,11 +65,31 @@ var App = Backbone.View.extend({
         fiveyear.setData(this.grid.get('fiveyear'), true);
     },
 
+    createMap: function(url, cb) {
+        var map = L.map('map');
+        wax.tilejson(url, function(tilejson) {
+            // template = _.template($('#template').html());
+
+            tilejson.minzoom = 0;
+            tilejson.maxzoom = 7;
+            map.addLayer(new wax.leaf.connector(tilejson))
+                .fitWorld();
+
+            // put zoom controls in the upper right
+            map.zoomControl.setPosition('topright');
+
+            if (_.isFunction(cb)) cb(map, tilejson);
+        });
+
+        // return the map immediately
+        return map;
+    },
+
     setupMap: function(map, tilejson) {
         var grid = this.grid
           , app = this;
 
-        this.map = map;
+        // this.map = map;
 
         this.interaction = wax.leaf.interaction()
             .map(map)
@@ -52,46 +97,23 @@ var App = Backbone.View.extend({
             .on({
                 
                 on: function(e) {
-                    var data = window.data = e.data;
-
-                    if (data.annual) {
-                        var annual = JSON.parse(data.annual)
-                          , fiveyear = JSON.parse(data.fiveyear);
-
-                        /**
-                        annual.setData(temps, true);
-                        fiveyear.setData(fives, true);
-                        **/
-                        grid.set({
-                            lat_id: data.lat_id,
-                            lng_id: data.lng_id,
-                            annual: annual,
-                            fiveyear: fiveyear
-                        });
-                    }
+                    grid.set({
+                        lat_id: e.data.lat_id,
+                        lng_id: e.data.lng_id,
+                        latest: e.data.latest,
+                        annual: JSON.parse(e.data.annual),
+                        fiveyear: JSON.parse(e.data.fiveyear)
+                    });
                 },
                 
-                off: function(e) {}
+                off: function() {}
             });
+
+        // when we're done, fire a ready event
+        this.trigger('mapready');
     }
 })
 
-function createMap(url, cb) {
-    wax.tilejson(url, function(tilejson) {
-        // template = _.template($('#template').html());
-
-        tilejson.minzoom = 0;
-        tilejson.maxzoom = 7;
-        var map = L.map('map')
-            .addLayer(new wax.leaf.connector(tilejson))
-            .fitWorld();
-
-        // put zoom controls in the upper right
-        map.zoomControl.setPosition('topright');
-
-        if (_.isFunction(cb)) cb(map, tilejson);
-    });
-}
 
 // when all is ready, create the app
 var app = new App();
