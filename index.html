@@ -4,7 +4,6 @@
     <title>Climate Change | New Scientist</title>
     
     <link rel="stylesheet" media="screen" href="components/bootstrap/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="css/climate.css">
     <link rel="stylesheet" type="text/css" href="components/leaflet/leaflet.css">
     <link rel="stylesheet" type="text/css" href="components/wax/theme/controls.css">
 
@@ -22,70 +21,20 @@
         </div>
       </div>
     </div>
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span4">
-          <div id="chart"></div>
-        </div><!--/span-->
-        <div class="span8">
-          <div class="row-fluid">
-            <div id="map"></div>
-          </div><!--/row-->
-        </div><!--/span-->
-      </div><!--/row-->
+    <div id="map"></div>
 
-      <footer>
-          <p>Built by Chris Amico and Peter Aldhous for New Scientist</p>
-      </footer>
-
-    </div><!--/.fluid-container-->
-    <!-- template -->
-    <script type="x-jst" id="template">
-    <h3>Temperatures</h3>
-    <p>Latest: <%= latest %></p>
-    </script>
+    <div id="chart"></div>
 
     <!-- js -->
     <script src="components/jquery/jquery.min.js"></script>
     <script src="node_modules/underscore/underscore-min.js"></script>
+    <script src="node_modules/backbone/backbone-min.js"></script>
     <script src="components/leaflet/leaflet.js"></script>
     <script src="components/wax/dist/wax.leaf.js"></script>
     <script src="components/highcharts/highcharts.src.js"></script>
+    <script src="js/chart-data.js"></script>
     <script src="js/chart.js"></script>
+    <script src="js/app.js"></script>
 
-    <script type="text/javascript">
-    var interaction, map, template
-      , tooltip = wax.tooltip()
-      , url = "http://a.tiles.mapbox.com/v3/mapbox.world-light,chrisamico.climate.jsonp";
-    
-    wax.tilejson(url, function(tilejson) {
-        template = _.template($('#template').html());
-
-        tilejson.minzoom = 2;
-        tilejson.maxzoom = 6;
-        map = L.map('map')
-            .addLayer(new wax.leaf.connector(tilejson))
-            .fitWorld();
-
-        interaction = wax.leaf.interaction()
-            .map(map)
-            .tilejson(tilejson)
-            .on({
-              on: function(e) {
-                var data = window.data = e.data;
-                // chart.html(template(e.data));
-
-                if (data.temps) {
-                  var temps = window.temps = JSON.parse(data.temps);
-                  _.each(temps, function(d, i, list) {
-                    if (d === 9999) list[i] = null;
-                  });
-                  annual.setData(temps, true);
-                }
-              },
-              off: function(e) {}
-            });
-    });
-    </script>
   </body>
 </html>
