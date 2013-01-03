@@ -1,40 +1,90 @@
+
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Climate Change | New Scientist</title>
-    
-    <link rel="stylesheet" media="screen" href="components/bootstrap/bootstrap.css">
+<html>
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="css/climate.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="components/leaflet/leaflet.css">
     <link rel="stylesheet" type="text/css" href="components/wax/theme/controls.css">
 
-  </head>
-  <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="brand" href="#">Our Warming World</a>
-          <div class="nav-collapse collapse">
-            <p class="navbar-text pull-right">
-              <a href="#" class="navbar-link">New Scientist</a>
-            </p>
-          </div><!--/.nav-collapse -->
+    <title>Climate Change | New Scientist</title>
+
+</head>
+
+<body>
+    
+    <div id="header">
+
+        <a href="http://www.newscientist.com/" target="_blank"><img src="img/NSlogo.png" alt="NS logo"/></a>
+
+        <div id="title">
+            <h2>YOUR WARMING WORLD</h2>
         </div>
-      </div>
+        
+        <form id="search">
+            <input type="text" placeholder=" Address, city, etc."/>
+            <input type="submit" value="Go"> 
+        </form>
+        
+        <button id="location">Find my location</button>
+        
+        <form id="menu">
+        <label for="menu">Map:</label>
+            <select>
+                <option value="past 20 years">avg temps past 20 years</option>
+                <option value="21-40 years ago">avg temps 21 to 40 years ago</option>
+                <option value="41-60 years ago">avg temps 41 to 60 years ago</option>
+                <option value="61-80 years ago">avg temps 61 to 80 years ago</option>
+                <option value="81-100 years ago">avg temps 81 to 100 years ago</option>
+                <option value="101-120 years ago">avg temps 101 to 120 years ago</option>
+            </select>
+        </form>
+    
+ 
+  
     </div>
+        
+     
+    <div id="panel">
+    
+        <p>The heat is on for the planet as a whole, as shown by the chart below. But what has been happening at your location? Find out by entering your city or address in the search box at top right, or use the "find my location" button.</p>
+
+        <p>You can also pan, zoom and click on the map to select interesting locations. The initial view maps average temperatures from 1991-2000; use the drop-down menu to map temperatures for earlier periods.
+        
+        <p><strong>More</strong>: View an <a href="http://www.newscientist.com/" target="_blank">animation</a> of the global temperature record, and read our <a href="http://www.newscientist.com/topic/climate-change" target="_blank">climate change topic guide</a>.</p>
+    
+    
+    </div> 
+                
     <div id="map"></div>
 
     <div id="chart"></div>
+    
+    <div id="legend">
+    
+        <p><strong>Difference from 1951-1980 average (°C)</strong></p>
 
-    <!-- js -->
+        <img src="img/panoplyGCT.png" alt="colours"/>
+
+        <p style="float: left; width: 34%;; text-align: left; font-size: 90%">-3</p>
+        <p style="float: left; width: 33%; text-align: center; font-size: 90%">0</p>
+        <p style="float: left; width: 33%; text-align: right; font-size: 90%">+3</p>
+    
+        <p id="source">Source: NASA Goddard Institute for Space Studies Surface Temperature Analysis</p>
+    
+    </div>
+
     <script src="components/jquery/jquery.min.js"></script>
     <script src="node_modules/underscore/underscore-min.js"></script>
     <script src="node_modules/backbone/backbone-min.js"></script>
     <script src="components/leaflet/leaflet.js"></script>
     <script src="components/wax/dist/wax.leaf.js"></script>
-    <script src="components/highcharts/highcharts.src.js"></script>
+    <script src="components/highcharts/highcharts.js"></script>
     <script src="js/chart-data.js"></script>
     <script src="js/chart.js"></script>
     <script src="js/app.js"></script>
-
-  </body>
+   
+</body>
 </html>
+
