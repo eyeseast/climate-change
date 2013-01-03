@@ -10,8 +10,8 @@ var Grid = Backbone.Model.extend({
     },
 
     initialize: function(attributes, options) {
-        this.on('change:lat_id', this.setId)
-        this.on('change:lng_id', this.setId)
+        this.on('change:lat_id', this.setId);
+        this.on('change:lng_id', this.setId);
     },
 
     setId: function() {
@@ -105,20 +105,35 @@ var LayerMenu = Backbone.View.extend({
 
 var App = Backbone.View.extend({
 
+    el: 'body',
+
     events: {
         "click #location" : "locate"
     },
 
     initialize: function(options) {
         _.bindAll(this);
-        this.setElement('body');
 
         // create big moving parts
+        this.cache = { hits: 0, misses: 0 };
         this.highchart = createChart();
         this.menu = new LayerMenu({ app: this });
         this.map = this.createMap(this.menu.layers.first().url(), this.setupMap);
 
         return this;
+    },
+
+    getset: function(data, field) {
+        // get or set cache for a location
+        var key = data.lng_id + ':' + data.lat_id + ':' + field;
+        if (_.has(this.cache, key)) {
+            this.cache.hits++;
+            return this.cache[key];
+        } else {
+            this.cache.misses++;
+            this.cache[key] = JSON.parse(data[field]);
+            return this.cache[key];
+        }
     },
 
     locate: function(e) {
@@ -133,14 +148,6 @@ var App = Backbone.View.extend({
                 .addTo(map)
                 .bindPopup('You are here.');
         });
-    },
-
-    plot: function() {
-        var annual = this.highchart.annual
-          , fiveyear = this.highchart.fiveyear;
-
-        annual.setData(this.grid.get('annual'), true);
-        fiveyear.setData(this.grid.get('fiveyear'), true);
     },
 
     createMap: function(url, cb) {
@@ -175,8 +182,8 @@ var App = Backbone.View.extend({
             .on({
                 
                 on: function(e) {
-                    app.highchart.annual.setData(JSON.parse(e.data.annual));
-                    app.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear));
+                    app.highchart.annual.setData(app.getset(e.data, 'annual'));
+                    app.highchart.fiveyear.setData(app.getset(e.data, 'fiveyear'));
                 },
                 
                 off: function() {}
