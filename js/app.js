@@ -20,6 +20,89 @@ var Grid = Backbone.Model.extend({
     }
 });
 
+var Layer = Backbone.Model.extend({
+
+    defaults: {
+        name: "",
+        id: "",
+        tilejson: {}
+    },
+
+    url: function() {
+        var ids = ['mapbox.world-light', this.id, 'newscientist26102012.climate-grid'];
+        return "http://a.tile.mapbox.com/v3/" + ids + ".jsonp";
+    }
+});
+
+
+var LayerSet = Backbone.Collection.extend({
+    model: Layer
+});
+
+var layers = new LayerSet([
+    {
+        id: "newscientist26102012.1992-2011",
+        name: "1992 - 2011"
+    },
+    
+    {
+        id: "newscientist26102012.1973-1992",
+        name: "1973 - 1992"
+    },
+    {
+        id: "newscientist26102012.1953-1972",
+        name: "1953 - 1972"
+    },
+    {
+        id: "newscientist26102012.1933-1952",
+        name: "1933 - 1952"
+    },
+    {
+        id: "newscientist26102012.1913-1932", 
+        name: "1913 - 1932"
+    },
+    {
+        id: "newscientist26102012.1893-1912",
+        name: "1893 - 1912"
+    }
+]);
+
+var LayerMenu = Backbone.View.extend({
+
+    el: "#menu",
+
+    events: {
+        "change select" : "setLayer"
+    },
+
+    initialize: function(options) {
+        _.bindAll(this);
+        this.app = options.app;
+        this.layers = layers;
+        return this.render();
+    },
+
+    setLayer: function(e) {
+        var id = $(e.target).val()
+          , layer = this.layers.get(id)
+          , url = layer.url();
+
+        this.app.setMapLayer(url);
+    },
+
+    render: function() {
+        var select = this.$el.find('select').empty();
+        this.layers.each(function(layer) {
+            var option = $('<option/>')
+                .attr('value', layer.get('id'))
+                .text(layer.get('name'))
+                .appendTo(select);
+        });
+
+        return this;
+    }
+});
+
 var App = Backbone.View.extend({
 
     events: {
@@ -32,8 +115,8 @@ var App = Backbone.View.extend({
 
         // create big moving parts
         this.highchart = createChart();
-        this.grid = new Grid();
-        this.map = this.createMap(url, this.setupMap);
+        this.menu = new LayerMenu({ app: this });
+        this.map = this.createMap(this.menu.layers.first().url(), this.setupMap);
 
         return this;
     },
@@ -63,12 +146,14 @@ var App = Backbone.View.extend({
     createMap: function(url, cb) {
         var map = L.map('map')
           , app = this;
-        wax.tilejson(url, function(tilejson) {
-            app.tilejson = tilejson;
 
-            tilejson.minzoom = 0;
+        wax.tilejson(url, function(tilejson) {
+            tilejson.minzoom = 2;
             tilejson.maxzoom = 6;
-            map.addLayer(new wax.leaf.connector(tilejson))
+            app.tilejson = tilejson;
+            app.layer = new wax.leaf.connector(tilejson);
+
+            map.addLayer(app.layer)
                 .fitWorld();
 
             // put zoom controls in the upper right
@@ -82,8 +167,7 @@ var App = Backbone.View.extend({
     },
 
     setupMap: function(map, tilejson) {
-        var grid = this.grid
-          , app = this;
+        var app = this;
 
         this.interaction = wax.leaf.interaction()
             .map(map)
@@ -100,6 +184,22 @@ var App = Backbone.View.extend({
 
         // when we're done, fire a ready event
         this.trigger('mapready');
+    },
+
+    setMapLayer: function(url) {
+        var map = this.map
+          , app = this;
+
+        wax.tilejson(url, function(tilejson) {
+            map.removeLayer(app.layer);
+
+            app.tilejson = tilejson;
+            tilejson.minzoom = 2;
+            tilejson.maxzoom = 6;
+
+            app.layer = new wax.leaf.connector(tilejson);
+            map.addLayer(app.layer);
+        });
     }
 })
 
