@@ -30,15 +30,8 @@
         <button id="location">Find my location</button>
         
         <form id="menu">
-        <label for="menu">Map:</label>
-            <select>
-                <option value="past 20 years">avg temps past 20 years</option>
-                <option value="21-40 years ago">avg temps 21 to 40 years ago</option>
-                <option value="41-60 years ago">avg temps 41 to 60 years ago</option>
-                <option value="61-80 years ago">avg temps 61 to 80 years ago</option>
-                <option value="81-100 years ago">avg temps 81 to 100 years ago</option>
-                <option value="101-120 years ago">avg temps 101 to 120 years ago</option>
-            </select>
+            <label for="menu">Map:</label>
+            <select></select>
         </form>
     
  
@@ -48,9 +41,9 @@
      
     <div id="panel">
     
-        <p>The heat is on for the planet as a whole, as shown by the chart below. But what has been happening at your location? Find out by entering your city or address in the search box at top right, or use the "find my location" button.</p>
+        <p>The heat is on for the planet as a whole, but what has been happening at your location? Pan and scroll over the map to find out, enter a city or address in the search box at top right, or use the "find my location" button.</p>
 
-        <p>You can also pan, zoom and click on the map to select interesting locations. The initial view maps average temperatures from 1991-2000; use the drop-down menu to map temperatures for earlier periods.
+        <p>The initial map shows average temperatures for the past 20 years; use the drop-down menu to map temperatures for earlier periods.
         
         <p><strong>More</strong>: View an <a href="http://www.newscientist.com/" target="_blank">animation</a> of the global temperature record, and read our <a href="http://www.newscientist.com/topic/climate-change" target="_blank">climate change topic guide</a>.</p>
     
@@ -59,7 +52,10 @@
                 
     <div id="map"></div>
 
-    <div id="chart"></div>
+    <div id="charts">
+        <div id="local-chart"></div>
+        <div id="global-chart"></div>
+    </div>
     
     <div id="legend">
     

@@ -101,7 +101,8 @@ var App = Backbone.View.extend({
 
         // create big moving parts
         this.cache = { hits: 0, misses: 0 };
-        this.highchart = createChart();
+        this.highchart = localChart('local-chart');
+        this.globalchart = globalChart('global-chart');
         this.menu = new LayerMenu({ app: this });
         this.map = this.createMap(this.menu.layers.first().url(), this.setupMap);
         this.marker = L.marker([0,0], { clickable: false });
@@ -137,7 +138,7 @@ var App = Backbone.View.extend({
     },
 
     createMap: function(url, cb) {
-        var map = L.map('map')
+        var map = L.map('map', { worldCopyJump: false })
           , app = this;
 
         wax.tilejson(url, function(tilejson) {

@@ -1,24 +1,24 @@
-function createChart() {
+var colors = {
+    global5: '#b22222',
+    local5 : '#2b2b2b',
+    local1 : '#808080'
+}
 
-    var colors = {
-        global5: '#b22222',
-        local5 : '#2b2b2b',
-        local1 : '#808080'
-    }
-
-    Highcharts.setOptions({
-        chart: {
-            style: {
-                fontFamily: 'Arial',
-                fontWeight: '400',
-                fontSize: '10pt'
-            }
+Highcharts.setOptions({
+    chart: {
+        style: {
+            fontFamily: 'Arial',
+            fontWeight: '400',
+            fontSize: '10pt'
         }
-    });
+    }
+});
+
+function localChart(container) {
      
     var chart = new Highcharts.Chart({
         chart: {
-            renderTo: 'chart',
+            renderTo: container,
             type: 'line',
         },
         credits: {
@@ -81,40 +81,24 @@ function createChart() {
         },
         
         title: {
-            text: 'Global average temperature',
+            text: 'At this location',
             align: 'center',
             x: 18,
             style: {
-                color: '#000000',
-                fontSize: '14px',
-                fontWeight: '400',
-            }
+                     color: '#000000',
+                     fontSize: '14px',
+                     fontWeight: '900',
+                }
         },
         
         labels: {
             items: [
             {
-                html: 'Five-year global average',
+                html: 'Five-year average',
                 style: {
-                    top: '210px',
-                    left: '20px',
-                    color: colors.global5
-                }
-            },
-            {
-                html: 'Local five-year average',
-                style: {
-                    top: '190px',
-                    left: '20px',
-                    color: colors.local5
-                }
-            },
-            {
-                html: 'Local annual average',
-                style: {
-                    top: '170px',
-                    left: '20px',
-                    color: colors.local1
+                    top: '310px',
+                    left: '100px',
+                    color: '#b22222'
                 }
             }
             ]
@@ -162,12 +146,135 @@ function createChart() {
         // local five-year
         {
             name: 'Five-year average',
+            data: GLOBAL_FIVE_YEAR,
+            pointStart: Date.UTC(1880, 6, 1),
+            pointInterval: 365.25 * 24 * 3600 * 1000,// one year
+            color: colors.global5, // '#2b2b2b',
+            lineWidth: 1.5
+        }
+        ]
+    });
+    
+    chart.annual = chart.series[0];
+    chart.fiveyear = chart.series[1];
+
+    return chart;
+};
+
+function globalChart(container) {
+    var chart = new Highcharts.Chart({
+        chart: {
+            renderTo: container,
+            type: 'line',
+        },
+        credits: {
+        enabled: false
+        },
+        legend: {
+        enabled: false
+        },
+        title: {
+            text: null
+        },
+        
+        xAxis: {
+            type: 'datetime',
+            lineColor: '#cccccc',
+            tickColor: '#cccccc',
+            labels: {
+            formatter: function() {
+                return Highcharts.dateFormat('%Y', this.value);
+                },
+            step: 2,
+            overflow: 'justify',
+            y: 20,
+            style: {
+                  color: '#000000',
+                  fontSize: '8pt',
+                  fontWeight: '400' 
+                },
+                      
+            },              
+            title: {
+            text: null
+            },
+        },
+        
+        yAxis: {
+            max: 1,
+            min:-1,
+            tickInterval: 1,
+            lineColor: '#cccccc',
+            lineWidth: 1,
+            title: {
+                text: 'title',
+                style: {
+                     color: '#ffffff',
+                     fontSize: '9pt',
+                     fontWeight: '400'
+                }
+            },
+            labels: {
+                formatter: function() {
+                    return this.value; // clean, unformatted number for ice extent
+                },
+                style: {
+                     color: '#000000',
+                     fontSize: '9pt',
+                     fontWeight: '400'
+                },
+                y: 6
+            }
+        },
+        
+        title: {
+            text: 'Global average',
+            align: 'center',
+            x: 18,
+            style: {
+                     color: '#000000',
+                     fontSize: '14px',
+                     fontWeight: '900',
+                }
+        },
+        
+        plotOptions: {
+            series: {
+                animation: false,
+                shadow: false,
+                marker: {
+                    enabled: false
+                    },
+                states: {
+                    hover: {
+                        enabled: false
+                    }
+                }       
+            }
+        },
+        
+        tooltip: {
+                backgroundColor: 'white',
+                style: {
+                   fontWeight: '400',
+                   fontSize: '10pt'
+                }, 
+                xDateFormat: '<strong>%Y</strong><br>',
+                shared: true,
+                borderWidth: 0,
+                valueDecimals: 2,
+                valueSuffix: ' °C'
+        },
+                          
+        series: [
+        {
+            name: 'Annual average',
             data: GLOBAL_ONE_YEAR,
             pointStart: Date.UTC(1880, 6, 1),
             pointInterval: 365.25 * 24 * 3600 * 1000,// one year
-            color: colors.local5, // '#2b2b2b',
-            lineWidth: 1.5
-        },
+            color: colors.local1, // '#808080',
+            lineWidth: 1
+        },         
 
         // global five-year
         {
@@ -178,10 +285,8 @@ function createChart() {
             color: colors.global5 // '#b22222'
         }
         ]
+                   
     });
-    
-    chart.annual = chart.series[0];
-    chart.fiveyear = chart.series[1];
 
     return chart;
-};
+}
