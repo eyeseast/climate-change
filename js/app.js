@@ -85,7 +85,7 @@ var LayerMenu = Backbone.View.extend({
 var mapOptions = {
     minzoom: 2,
     maxzoom: 6,
-    unloadInvisibleTiles: false
+    unloadInvisibleTiles: true
 }
 
 var App = Backbone.View.extend({
@@ -104,6 +104,8 @@ var App = Backbone.View.extend({
         this.highchart = createChart();
         this.menu = new LayerMenu({ app: this });
         this.map = this.createMap(this.menu.layers.first().url(), this.setupMap);
+        this.marker = L.marker([0,0], { clickable: false });
+        this.square = L.rectangle([[0,0], [0,0]], { clickable: false });
 
         return this;
     },
@@ -166,15 +168,33 @@ var App = Backbone.View.extend({
             .on({
                 
                 on: function(e) {
-                    app.highchart.annual.setData(app.getset(e.data, 'annual'));
-                    app.highchart.fiveyear.setData(app.getset(e.data, 'fiveyear'));
+                    if (e.e.type === 'click') {
+                        window.e = e;
+                        app.highchart.annual.setData(JSON.parse(e.data.annual), false);
+                        app.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear), false);
+                        app.highchart.redraw();
+                        console.log('redraw %s', (new Date()).toString())
+                    }
+
+                    //app.getset(e.data, 'annual');
+                    //app.getset(e.data, 'fiveyear');
                 },
                 
                 off: function() {}
             });
 
-        // when we're done, fire a ready event
-        this.trigger('mapready');
+        this.map.on('click', function(e) {
+            app.marker.setLatLng(e.latlng);
+            app.marker.addTo(app.map);
+
+            var bounds = [
+                [Math.floor(e.latlng.lat / 2) * 2, Math.floor(e.latlng.lng / 2) * 2],
+                [Math.ceil(e.latlng.lat / 2) * 2, Math.ceil(e.latlng.lng / 2) * 2]
+            ];
+
+            app.square.setBounds(bounds);
+            app.square.addTo(app.map);
+        });
     },
 
     setMapLayer: function(url) {
