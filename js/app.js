@@ -82,6 +82,12 @@ var LayerMenu = Backbone.View.extend({
     }
 });
 
+var mapOptions = {
+    minzoom: 2,
+    maxzoom: 6,
+    unloadInvisibleTiles: false
+}
+
 var App = Backbone.View.extend({
 
     el: 'body',
@@ -134,8 +140,7 @@ var App = Backbone.View.extend({
           , app = this;
 
         wax.tilejson(url, function(tilejson) {
-            tilejson.minzoom = 2;
-            tilejson.maxzoom = 6;
+            _.extend(tilejson, mapOptions);
             app.tilejson = tilejson;
             app.layer = new TileJsonLayer(tilejson);
 
@@ -179,9 +184,8 @@ var App = Backbone.View.extend({
         wax.tilejson(url, function(tilejson) {
             map.removeLayer(app.layer);
 
+            _.extend(tilejson, mapOptions);
             app.tilejson = tilejson;
-            tilejson.minzoom = 2;
-            tilejson.maxzoom = 6;
 
             app.layer = new TileJsonLayer(tilejson);
             map.addLayer(app.layer);
