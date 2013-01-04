@@ -174,6 +174,7 @@ var App = Backbone.View.extend({
                         app.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear), false);
                         app.highchart.redraw();
                         console.timeEnd('Redraw');
+                        console.timeEnd('Leaflet click');
                     }
                 },
                 
@@ -183,6 +184,7 @@ var App = Backbone.View.extend({
         this.map.on('click', function(e) {
             app.marker.setLatLng(e.latlng);
             app.marker.addTo(app.map);
+            console.time('Leaflet click');
         });
     },
 
