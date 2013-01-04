@@ -1,25 +1,4 @@
-var url = "http://a.tiles.mapbox.com/v3/newscientist26102012.climate-prototype.jsonp";
-
-var Grid = Backbone.Model.extend({
-
-    defaults: {
-        lat_id: null,
-        lng_id: null,
-        annual: [],
-        fiveyear: []
-    },
-
-    initialize: function(attributes, options) {
-        this.on('change:lat_id', this.setId);
-        this.on('change:lng_id', this.setId);
-    },
-
-    setId: function() {
-        var id = this.get('lng_id') + ':' + this.get('lat_id');
-        this.set({ id: id });
-    }
-});
-
+(function() {
 var Layer = Backbone.Model.extend({
 
     defaults: {
@@ -158,7 +137,7 @@ var App = Backbone.View.extend({
             tilejson.minzoom = 2;
             tilejson.maxzoom = 6;
             app.tilejson = tilejson;
-            app.layer = new wax.leaf.connector(tilejson);
+            app.layer = new TileJsonLayer(tilejson);
 
             map.addLayer(app.layer)
                 .fitWorld();
@@ -204,12 +183,23 @@ var App = Backbone.View.extend({
             tilejson.minzoom = 2;
             tilejson.maxzoom = 6;
 
-            app.layer = new wax.leaf.connector(tilejson);
+            app.layer = new TileJsonLayer(tilejson);
             map.addLayer(app.layer);
         });
+    }
+});
+
+var TileJsonLayer = L.TileLayer.extend({
+    initialize: function(options) {
+        options = options || {};
+        options.minZoom = options.minzoom || 0;
+        options.maxZoom = options.maxzoom || 22;
+        var tile_url = options.tiles[0].replace('a.tiles', '{s}.tiles');
+        L.TileLayer.prototype.initialize.call(this, tile_url, options);
     }
 })
 
 
 // when all is ready, create the app
-var app = new App();
+window.app = new App();
+})();
