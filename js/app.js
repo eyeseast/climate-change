@@ -105,7 +105,6 @@ var App = Backbone.View.extend({
         this.menu = new LayerMenu({ app: this });
         this.map = this.createMap(this.menu.layers.first().url(), this.setupMap);
         this.marker = L.marker([0,0], { clickable: false });
-        this.square = L.rectangle([[0,0], [0,0]], { clickable: false });
 
         return this;
     },
@@ -169,15 +168,13 @@ var App = Backbone.View.extend({
                 
                 on: function(e) {
                     if (e.e.type === 'click') {
-                        window.e = e;
+                        app.e = e;
+                        console.time('Redraw');
                         app.highchart.annual.setData(JSON.parse(e.data.annual), false);
                         app.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear), false);
                         app.highchart.redraw();
-                        console.log('redraw %s', (new Date()).toString())
+                        console.timeEnd('Redraw');
                     }
-
-                    //app.getset(e.data, 'annual');
-                    //app.getset(e.data, 'fiveyear');
                 },
                 
                 off: function() {}
@@ -186,14 +183,6 @@ var App = Backbone.View.extend({
         this.map.on('click', function(e) {
             app.marker.setLatLng(e.latlng);
             app.marker.addTo(app.map);
-
-            var bounds = [
-                [Math.floor(e.latlng.lat / 2) * 2, Math.floor(e.latlng.lng / 2) * 2],
-                [Math.ceil(e.latlng.lat / 2) * 2, Math.ceil(e.latlng.lng / 2) * 2]
-            ];
-
-            app.square.setBounds(bounds);
-            app.square.addTo(app.map);
         });
     },
 
