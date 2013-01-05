@@ -152,12 +152,15 @@ var App = Backbone.View.extend({
 
     setView: function(lat, lng, zoom, e) {
         zoom = (zoom || this.map.getMaxZoom());
-        e = (e || {});
+        e = (e || { type: 'click' });
         var c = L.latLng([lat, lng]);
         this.marker.setLatLng(c);
         this.marker.addTo(this.map);
         this.map.setView(c, zoom);
-        this.interaction.click({ type: 'click'}, this.map.latLngToLayerPoint(c));
+
+        // fake a click
+        e.trigger = true;
+        this.interaction.click(e, this.map.latLngToLayerPoint(c));
     },
 
     createMap: function(url, cb) {
@@ -182,6 +185,15 @@ var App = Backbone.View.extend({
         return map;
     },
 
+    plot: function(e) {
+        console.time('Redraw');
+        this.highchart.annual.setData(JSON.parse(e.data.annual), false);
+        this.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear), false);
+        this.highchart.redraw();
+        console.log([e.data.lat_id, e.data.lng_id]);
+        console.timeEnd('Redraw');
+    },
+
     setupMap: function(map, tilejson) {
         var app = this;
 
@@ -191,13 +203,9 @@ var App = Backbone.View.extend({
             .on({
                 
                 on: function(e) {
-                    if ((e.e.type === 'click') || L.Browser.touch) {
+                    if (e.e.trigger) {
                         app.e = e;
-                        console.time('Redraw');
-                        app.highchart.annual.setData(JSON.parse(e.data.annual), false);
-                        app.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear), false);
-                        app.highchart.redraw();
-                        console.timeEnd('Redraw');
+                        app.plot(e);
                         console.timeEnd('Leaflet click');
                     }
 
@@ -215,9 +223,9 @@ var App = Backbone.View.extend({
             app.marker.addTo(app.map);
 
             // hack to get touch events to work
-            if (L.Browser.touch) {
-                app.interaction.click(e, e.layerPoint);
-            }
+            // and force chrome to use the right location
+            e.trigger = true;
+            app.interaction.click(e, e.layerPoint);
             console.time('Leaflet click');
         });
     },
