@@ -93,7 +93,8 @@ var App = Backbone.View.extend({
     el: 'body',
 
     events: {
-        "click #location" : "locate"
+        "click   #location" : "locate",
+        "submit  form"      : "geocode"
     },
 
     initialize: function(options) {
@@ -106,6 +107,7 @@ var App = Backbone.View.extend({
         this.menu = new LayerMenu({ app: this });
         this.map = this.createMap(this.menu.layers.first().url(), this.setupMap);
         this.marker = L.marker([0,0], { clickable: false });
+        this.geocoder = new Geocoder('Fmjtd|luub29682u%2C8g%3Do5-9680l6');
 
         return this;
     },
@@ -123,18 +125,42 @@ var App = Backbone.View.extend({
         }
     },
 
-    locate: function(e) {
+    geocode: function(e) {
         e.preventDefault();
 
-        var map = this.map;
-        map.locate({ setView: true });
+        var query = this.$('#search').find('input').val()
+          , app = this;
 
-        // this is mostly here for debugging
-        map.on('locationfound', function(e) {
-            L.marker(e.latlng, { radius: e.accuracy / 2 })
-                .addTo(map)
-                .bindPopup('You are here.');
+        this.geocoder.geocode(query, function(resp) {
+            // window.resp = resp;
+            var loc = resp.results[0].locations[0];
+            app.setView(loc.latLng.lat, loc.latLng.lng, null, e);
         });
+
+        return false;
+    },
+
+    locate: function(e) {
+        if (e) e.preventDefault();
+
+        var app = this;
+        app.map.locate()
+            .on('locationfound', function(e) {
+                app.setView(e.latlng.lat, e.latlng.lng, null, e);
+            });
+    },
+
+    setView: function(lat, lng, zoom, e) {
+        zoom = (zoom || this.map.getMaxZoom());
+        e = (e || { type: 'click' });
+        var c = L.latLng([lat, lng]);
+        this.marker.setLatLng(c);
+        this.marker.addTo(this.map);
+        this.map.setView(c, zoom);
+
+        // fake a click
+        e.trigger = true;
+        this.interaction.click(e, this.map.latLngToLayerPoint(c));
     },
 
     createMap: function(url, cb) {
@@ -159,6 +185,15 @@ var App = Backbone.View.extend({
         return map;
     },
 
+    plot: function(e) {
+        console.time('Redraw');
+        this.highchart.annual.setData(JSON.parse(e.data.annual), false);
+        this.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear), false);
+        this.highchart.redraw();
+        console.log([e.data.lat_id, e.data.lng_id]);
+        console.timeEnd('Redraw');
+    },
+
     setupMap: function(map, tilejson) {
         var app = this;
 
@@ -168,14 +203,15 @@ var App = Backbone.View.extend({
             .on({
                 
                 on: function(e) {
-                    if (e.e.type === 'click') {
+                    if (e.e.trigger) {
                         app.e = e;
-                        console.time('Redraw');
-                        app.highchart.annual.setData(JSON.parse(e.data.annual), false);
-                        app.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear), false);
-                        app.highchart.redraw();
-                        console.timeEnd('Redraw');
+                        app.plot(e);
                         console.timeEnd('Leaflet click');
+                    }
+
+                    if (L.Browser.touch) {
+                        app.e = e;
+                        console.log(e.e.type);
                     }
                 },
                 
@@ -185,6 +221,11 @@ var App = Backbone.View.extend({
         this.map.on('click', function(e) {
             app.marker.setLatLng(e.latlng);
             app.marker.addTo(app.map);
+
+            // hack to get touch events to work
+            // and force chrome to use the right location
+            e.trigger = true;
+            app.interaction.click(e, e.layerPoint);
             console.time('Leaflet click');
         });
     },
