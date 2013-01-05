@@ -4,7 +4,7 @@ var Layer = Backbone.Model.extend({
     defaults: {
         name: "",
         id: "",
-        tilejson: {}
+        active: false
     },
 
     url: function() {
@@ -21,28 +21,35 @@ var LayerSet = Backbone.Collection.extend({
 var layers = new LayerSet([
     {
         id: "newscientist26102012.1992-2011",
-        name: "1992 - 2011"
+        name: "1992 - 2011",
+        slug: "1992-2011",
+        active: true
     },
     
     {
         id: "newscientist26102012.1973-1992",
-        name: "1973 - 1992"
+        name: "1973 - 1992",
+        slug: "1973-1992"
     },
     {
         id: "newscientist26102012.1953-1972",
-        name: "1953 - 1972"
+        name: "1953 - 1972",
+        slug: "1953-1972"
     },
     {
         id: "newscientist26102012.1933-1952",
-        name: "1933 - 1952"
+        name: "1933 - 1952",
+        slug: "1933-1952"
     },
     {
         id: "newscientist26102012.1913-1932", 
-        name: "1913 - 1932"
+        name: "1913 - 1932",
+        slug: "1913-1932"
     },
     {
         id: "newscientist26102012.1893-1912",
-        name: "1893 - 1912"
+        name: "1893 - 1912",
+        slug: "1893-1912"
     }
 ]);
 
@@ -58,7 +65,26 @@ var LayerMenu = Backbone.View.extend({
         _.bindAll(this);
         this.app = options.app;
         this.layers = layers;
+        this.layers.on('change:active', this.setActiveLayer);
         return this.render();
+    },
+
+    getActiveLayer: function() {
+        return this.layers.find(function(layer) {
+            return layer.get('active');
+        });
+    },
+
+    setActiveLayer: function(layer, active, options) {
+        // set other layers false if this one is being set active
+        // and do it silently
+        if (active) {
+            this.layers.chain()
+                .filter(function(lyr) { lyr.id !== layer.id; })
+                .each(function(lyr) { lyr.set('active', false), { silent: true }});
+
+            this.$el.find('select').val(layer.id);
+        }
     },
 
     setLayer: function(e) {
@@ -66,7 +92,9 @@ var LayerMenu = Backbone.View.extend({
           , layer = this.layers.get(id)
           , url = layer.url();
 
-        this.app.setMapLayer(url);
+        layer.set('active', true);
+        this.app.router.setLayer(layer.get('slug'));
+        // this.app.setMapLayer(url);
     },
 
     render: function() {
@@ -106,6 +134,10 @@ var App = Backbone.View.extend({
         this.menu = new LayerMenu({ app: this });
         this.map = this.createMap(this.menu.layers.first().url(), this.setupMap);
         this.marker = L.marker([0,0], { clickable: false });
+        this.router = new MapRouter({ app: this });
+
+        // events
+        this.menu.layers.on('change:active', this.setMapLayer);
 
         return this;
     },
@@ -146,8 +178,8 @@ var App = Backbone.View.extend({
             app.tilejson = tilejson;
             app.layer = new TileJsonLayer(tilejson);
 
-            map.addLayer(app.layer)
-                .fitWorld();
+            map.addLayer(app.layer);
+                //.fitWorld();
 
             // put zoom controls in the upper right
             map.zoomControl.setPosition('topright');
@@ -189,9 +221,10 @@ var App = Backbone.View.extend({
         });
     },
 
-    setMapLayer: function(url) {
+    setMapLayer: function(layer, active, options) {
         var map = this.map
-          , app = this;
+          , app = this
+          , url = layer.url();
 
         wax.tilejson(url, function(tilejson) {
             map.removeLayer(app.layer);
@@ -204,6 +237,66 @@ var App = Backbone.View.extend({
         });
     }
 });
+
+var MapRouter = Backbone.Router.extend({
+
+    routes: {
+        ":layer/:zoom/:lat/:lng" : "setView"
+    },
+
+    initialize: function(options) {
+        this.app = options.app;
+        this.mapEvents();
+
+        return this;
+    },
+
+    mapEvents: function() {
+        var router = this;
+        this.app.map.on('moveend', function(e) {
+            var map = e.target
+              , c = e.target.getCenter();
+            router.navigate(router.getUrl(), { replace: true });
+        });
+    },
+
+    default: function() {
+        var layer = this.app.menu.layers.first()
+          , url = [layer.get('slug'), 2, 0, 0].join('/');
+
+        layer.set('active', true);
+        this.navigate(url, { replace: true });
+    },
+
+    setLayer: function(slug) {
+        var view = this.getView();
+        view[0] = slug;
+        this.navigate(view.join('/'), { trigger: true });
+    },
+
+    getUrl: function() {
+        return this.getView().join('/');
+    },
+
+    getView: function() {
+        return [
+            this.app.menu.getActiveLayer().get('slug'),
+            this.app.map.getZoom(),
+            this.app.map.getCenter().lat,
+            this.app.map.getCenter().lng
+        ];
+    },
+
+    setView: function(layer, zoom, lat, lng) {
+        // set the active layer to update the menu
+        app.menu.layers.find(function(lyr) {
+            return lyr.get('slug') === layer;
+        }).set('active', true);
+
+        // update the map
+        this.app.map.setView([lat, lng], zoom);
+    }
+})
 
 var TileJsonLayer = L.TileLayer.extend({
     initialize: function(options) {
@@ -218,4 +311,7 @@ var TileJsonLayer = L.TileLayer.extend({
 
 // when all is ready, create the app
 window.app = new App();
+if (!Backbone.history.start()) {
+    app.router.default();
+}
 })();
