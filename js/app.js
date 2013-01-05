@@ -93,7 +93,8 @@ var App = Backbone.View.extend({
     el: 'body',
 
     events: {
-        "click #location" : "locate"
+        "click   #location" : "locate",
+        "submit  form"      : "geocode"
     },
 
     initialize: function(options) {
@@ -124,18 +125,39 @@ var App = Backbone.View.extend({
         }
     },
 
+    geocode: function(e) {
+        e.preventDefault();
+
+        var query = this.$('#search').find('input').val()
+          , app = this;
+
+        this.geocoder.geocode(query, function(resp) {
+            // window.resp = resp;
+            var loc = resp.results[0].locations[0];
+            app.setView(loc.latLng.lat, loc.latLng.lng, null, e);
+        });
+
+        return false;
+    },
+
     locate: function(e) {
         if (e) e.preventDefault();
 
-        var map = this.map;
-        map.locate({ setView: true });
+        var app = this;
+        app.map.locate()
+            .on('locationfound', function(e) {
+                app.setView(e.latlng.lat, e.latlng.lng, null, e);
+            });
+    },
 
-        // this is mostly here for debugging
-        map.on('locationfound', function(e) {
-            L.marker(e.latlng, { radius: e.accuracy / 2 })
-                .addTo(map)
-                .bindPopup('You are here.');
-        });
+    setView: function(lat, lng, zoom, e) {
+        zoom = (zoom || this.map.getMaxZoom());
+        e = (e || {});
+        var c = L.latLng([lat, lng]);
+        this.marker.setLatLng(c);
+        this.marker.addTo(this.map);
+        this.map.setView(c, zoom);
+        this.interaction.click({ type: 'click'}, this.map.latLngToLayerPoint(c));
     },
 
     createMap: function(url, cb) {
@@ -178,7 +200,6 @@ var App = Backbone.View.extend({
                         console.timeEnd('Redraw');
                         console.timeEnd('Leaflet click');
                     }
-
                 },
                 
                 off: function() {}
