@@ -124,7 +124,7 @@ var App = Backbone.View.extend({
     },
 
     locate: function(e) {
-        e.preventDefault();
+        if (e) e.preventDefault();
 
         var map = this.map;
         map.locate({ setView: true });
@@ -177,6 +177,7 @@ var App = Backbone.View.extend({
                         console.timeEnd('Redraw');
                         console.timeEnd('Leaflet click');
                     }
+
                 },
                 
                 off: function() {}
@@ -185,6 +186,11 @@ var App = Backbone.View.extend({
         this.map.on('click', function(e) {
             app.marker.setLatLng(e.latlng);
             app.marker.addTo(app.map);
+
+            // hack to get touch events to work
+            if (L.Browser.touch) {
+                app.interaction.click(e, e.layerPoint);
+            }
             console.time('Leaflet click');
         });
     },
