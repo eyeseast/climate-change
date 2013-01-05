@@ -106,6 +106,7 @@ var App = Backbone.View.extend({
         this.menu = new LayerMenu({ app: this });
         this.map = this.createMap(this.menu.layers.first().url(), this.setupMap);
         this.marker = L.marker([0,0], { clickable: false });
+        this.geocoder = new Geocoder('Fmjtd|luub29682u%2C8g%3Do5-9680l6');
 
         return this;
     },
