@@ -1,6 +1,5 @@
 var colors = {
     global5: '#b22222',
-    local5 : '#2b2b2b',
     local1 : '#808080'
 }
 
@@ -54,17 +53,18 @@ function localChart(container) {
         },
         
         yAxis: {
-            max: 3.5,
-            min:-3.5,
+            max: 5,
+            min:-5,
             tickInterval: 1,
             lineColor: '#cccccc',
             lineWidth: 1,
             title: {
                 text: 'Difference from 1951-1980 average (°C)',
+                align: 'low',
                 style: {
                     color: '#000000',
-                    fontSize: '9pt',
-                    fontWeight: '400'
+                    fontSize: '10pt',
+                    fontWeight: '800'
                 }
             },
             labels: {
@@ -92,17 +92,16 @@ function localChart(container) {
         },
         
         labels: {
-            items: [
-            {
-                html: 'Five-year average',
-                style: {
-                    top: '310px',
-                    left: '100px',
-                    color: '#b22222'
-                }
-            }
-            ]
-        },
+        		items: [{
+           			html: 'Five-year average',
+            		style: {
+                		top: '260px',
+                		left: '105px',
+                		color: '#b22222'
+           			 },
+        		}]
+    		},
+               
         
         plotOptions: {
             series: {
@@ -216,7 +215,7 @@ function globalChart(container) {
             },
             labels: {
                 formatter: function() {
-                    return this.value; // clean, unformatted number for ice extent
+                    return this.value; // clean, unformatted number
                 },
                 style: {
                      color: '#000000',
