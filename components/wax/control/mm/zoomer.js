@@ -14,7 +14,7 @@ wax.mm.zoomer = function(map) {
     bean.add(zoomin, 'mousedown dblclick', function(e) {
         e.stop();
     });
-    bean.add(zoomin, 'click', function(e) {
+    bean.add(zoomin, 'touchstart click', function(e) {
         e.stop();
         map.zoomIn();
     }, false);
@@ -26,7 +26,7 @@ wax.mm.zoomer = function(map) {
     bean.add(zoomout, 'mousedown dblclick', function(e) {
         e.stop();
     });
-    bean.add(zoomout, 'click', function(e) {
+    bean.add(zoomout, 'touchstart click', function(e) {
         e.stop();
         map.zoomOut();
     });

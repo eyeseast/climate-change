@@ -191,7 +191,7 @@ var App = Backbone.View.extend({
             .on({
                 
                 on: function(e) {
-                    if (e.e.type === 'click') {
+                    if ((e.e.type === 'click') || L.Browser.touch) {
                         app.e = e;
                         console.time('Redraw');
                         app.highchart.annual.setData(JSON.parse(e.data.annual), false);
@@ -199,6 +199,11 @@ var App = Backbone.View.extend({
                         app.highchart.redraw();
                         console.timeEnd('Redraw');
                         console.timeEnd('Leaflet click');
+                    }
+
+                    if (L.Browser.touch) {
+                        app.e = e;
+                        console.log(e.e.type);
                     }
                 },
                 
