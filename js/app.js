@@ -107,7 +107,6 @@ var App = Backbone.View.extend({
         this.menu = new LayerMenu({ app: this });
         this.map = this.createMap(this.menu.layers.first().url(), this.setupMap);
         this.marker = L.marker([0,0], { clickable: false });
-        this.geocoder = new Geocoder('Fmjtd|luub29682u%2C8g%3Do5-9680l6');
 
         return this;
     },
@@ -131,12 +130,15 @@ var App = Backbone.View.extend({
         var query = this.$('#search').find('input').val()
           , app = this;
 
-        this.geocoder.geocode(query, function(resp) {
-            // window.resp = resp;
-            var loc = resp.results[0].locations[0];
-            app.setView(loc.latLng.lat, loc.latLng.lng, null, e);
-        });
-
+        if ($.trim(query)) {
+            mapbox_geocode(query, function(resp) {
+                // window.resp = resp;
+                if (resp.results) {
+                    var loc = resp.results[0][0];
+                    app.setView(loc.lat, loc.lon, null, e);                    
+                }
+            });
+        }
         return false;
     },
 
@@ -192,7 +194,7 @@ var App = Backbone.View.extend({
         this.highchart.annual.setData(JSON.parse(e.data.annual), false);
         this.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear), false);
         this.highchart.redraw();
-        console.log([e.data.lat_id, e.data.lng_id]);
+        // console.log([e.data.lat_id, e.data.lng_id]);
         console.timeEnd('Redraw');
     },
 
@@ -227,6 +229,7 @@ var App = Backbone.View.extend({
             // hack to get touch events to work
             // and force chrome to use the right location
             e.trigger = true;
+            // console.log(e);
             app.interaction.click(e, e.layerPoint);
             console.time('Leaflet click');
         });
