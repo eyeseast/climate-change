@@ -180,7 +180,7 @@ var App = Backbone.View.extend({
                 .setView([c[1], c[0]], 2);
 
             // put zoom controls in the upper right
-            map.zoomControl.setPosition('topright');
+            // map.zoomControl.setPosition('topright');
 
             if (_.isFunction(cb)) cb(map, tilejson);
         });

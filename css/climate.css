@@ -48,7 +48,15 @@ body  {
 }
     
 #map .leaflet-top {
-    top: 60px;
+    top: 50px;
+}
+
+#map .leaflet-right {
+    right: 310px;
+}
+
+#map .leaflet-left {
+    left: 310px;
 }
 
 #panel {
