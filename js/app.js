@@ -161,6 +161,8 @@ var App = Backbone.View.extend({
         // fake a click
         e.trigger = true;
         this.interaction.click(e, this.map.latLngToLayerPoint(c));
+
+        return this;
     },
 
     createMap: function(url, cb) {
@@ -171,9 +173,9 @@ var App = Backbone.View.extend({
             _.extend(tilejson, mapOptions);
             app.tilejson = tilejson;
             app.layer = new TileJsonLayer(tilejson);
-
+            var c = tilejson.center;
             map.addLayer(app.layer)
-                .fitWorld();
+                .setView([c[1], c[0]], 2);
 
             // put zoom controls in the upper right
             map.zoomControl.setPosition('topright');
@@ -228,6 +230,9 @@ var App = Backbone.View.extend({
             app.interaction.click(e, e.layerPoint);
             console.time('Leaflet click');
         });
+
+        _.defer(this.setView, 0, 0, 2);
+
     },
 
     setMapLayer: function(url) {
