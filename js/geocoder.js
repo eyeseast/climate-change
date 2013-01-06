@@ -17,3 +17,14 @@ Geocoder.prototype.geocode = function(location, cb) {
         success: cb
     });
 };
+
+function mapbox_geocode(query, cb) {
+    // "http://a.tiles.mapbox.com/v3/newscientist26102012.map-hw5hiyum/geocode/london.json"
+    var url = "http://a.tiles.mapbox.com/v3/newscientist26102012.map-z33q8ey1/geocode/" + encodeURIComponent(query) + ".json";
+
+    return jQuery.ajax({
+        url: url,
+        dataType: "jsonp",
+        crossDomain: true
+    });
+}
