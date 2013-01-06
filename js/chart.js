@@ -135,7 +135,7 @@ function localChart(container) {
         // local annual
         {
             name: 'Annual average',
-            data: GLOBAL_ONE_YEAR,
+            data: [],// GLOBAL_ONE_YEAR,
             pointStart: Date.UTC(1880, 6, 1),
             pointInterval: 365.25 * 24 * 3600 * 1000,// one year
             color: colors.local1, // '#808080',
@@ -145,7 +145,7 @@ function localChart(container) {
         // local five-year
         {
             name: 'Five-year average',
-            data: GLOBAL_FIVE_YEAR,
+            data: [],//GLOBAL_FIVE_YEAR,
             pointStart: Date.UTC(1880, 6, 1),
             pointInterval: 365.25 * 24 * 3600 * 1000,// one year
             color: colors.global5, // '#2b2b2b',
