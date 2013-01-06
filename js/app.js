@@ -156,13 +156,13 @@ var App = Backbone.View.extend({
         zoom = (zoom || this.map.getMaxZoom());
         e = (e || { type: 'click' });
         var c = L.latLng([lat, lng]);
-        this.marker.setLatLng(c);
-        this.marker.addTo(this.map);
         this.map.setView(c, zoom);
 
+        //this.marker.setLatLng(c);
+        //this.marker.addTo(this.map);
         // fake a click
-        e.trigger = true;
-        this.interaction.click(e, this.map.latLngToLayerPoint(c));
+        //e.trigger = true;
+        //this.interaction.click(e, this.map.latLngToLayerPoint(c));
 
         return this;
     },
