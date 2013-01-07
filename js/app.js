@@ -1,4 +1,7 @@
 (function() {
+// fix Leaflet's image problem
+L.Icon.Default.imagePath = "components/leaflet/images";
+
 var Layer = Backbone.Model.extend({
 
     defaults: {
@@ -80,8 +83,8 @@ var LayerMenu = Backbone.View.extend({
         // and do it silently
         if (active) {
             this.layers.chain()
-                .filter(function(lyr) { lyr.id !== layer.id; })
-                .each(function(lyr) { lyr.set('active', false), { silent: true }});
+                .filter(function(lyr) { return lyr.id !== layer.id; })
+                .each(function(lyr) { lyr.attributes.active = false; });
 
             this.$el.find('select').val(layer.id);
         }
@@ -114,14 +117,15 @@ var mapOptions = {
     minzoom: 2,
     maxzoom: 6,
     unloadInvisibleTiles: true
-}
+};
 
 var App = Backbone.View.extend({
 
     el: 'body',
 
     events: {
-        "click #location" : "locate"
+        "click   #location" : "locate",
+        "submit  form"      : "geocode"
     },
 
     initialize: function(options) {
@@ -155,18 +159,47 @@ var App = Backbone.View.extend({
         }
     },
 
-    locate: function(e) {
+    geocode: function(e) {
         e.preventDefault();
 
-        var map = this.map;
-        map.locate({ setView: true });
+        var query = this.$('#search').find('input').val()
+          , app = this;
 
-        // this is mostly here for debugging
-        map.on('locationfound', function(e) {
-            L.marker(e.latlng, { radius: e.accuracy / 2 })
-                .addTo(map)
-                .bindPopup('You are here.');
-        });
+        if ($.trim(query)) {
+            mapbox_geocode(query, function(resp) {
+                // window.resp = resp;
+                if (resp.results) {
+                    var loc = resp.results[0][0];
+                    app.setView(loc.lat, loc.lon, null, e);                    
+                }
+            });
+        }
+        return false;
+    },
+
+    locate: function(e) {
+        if (e) e.preventDefault();
+
+        var app = this;
+        app.map.locate()
+            .on('locationfound', function(e) {
+                app.setView(e.latlng.lat, e.latlng.lng, null, e);
+            });
+    },
+
+    setView: function(lat, lng, zoom, e) {
+        zoom = (zoom || this.map.getMaxZoom());
+        e = (e || { type: 'click' });
+        var c = L.latLng([lat, lng]);
+        this.map.setView(c, zoom);
+
+        //this.marker.setLatLng(c);
+        //this.marker.addTo(this.map);
+        // fake a click
+        //e.trigger = true;
+        //this.interaction.click(e, this.map.latLngToLayerPoint(c));
+
+        return this;
     },
 
     createMap: function(url, cb) {
@@ -178,17 +211,28 @@ var App = Backbone.View.extend({
             app.tilejson = tilejson;
             app.layer = new TileJsonLayer(tilejson);
 
-            map.addLayer(app.layer);
-                //.fitWorld();
+            var c = tilejson.center;
+            map.addLayer(app.layer)
+                .setView([c[1], c[0]], 2);
 
             // put zoom controls in the upper right
-            map.zoomControl.setPosition('topright');
+            // map.zoomControl.setPosition('topright');
 
             if (_.isFunction(cb)) cb(map, tilejson);
         });
 
         // return the map immediately
         return map;
+    },
+
+    plot: function(e) {
+        console.time('Redraw');
+        app.e = e;
+        this.highchart.annual.setData(JSON.parse(e.data.annual), false);
+        this.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear), false);
+        this.highchart.redraw();
+        // console.log([e.data.lat_id, e.data.lng_id]);
+        console.timeEnd('Redraw');
     },
 
     setupMap: function(map, tilejson) {
@@ -200,13 +244,19 @@ var App = Backbone.View.extend({
             .on({
                 
                 on: function(e) {
-                    if (e.e.type === 'click') {
-                        app.e = e;
-                        console.time('Redraw');
-                        app.highchart.annual.setData(JSON.parse(e.data.annual), false);
-                        app.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear), false);
-                        app.highchart.redraw();
-                        console.timeEnd('Redraw');
+                    if (e.e.trigger) {
+                        app.plot(e);
+                        console.timeEnd('Leaflet click');
+                    }
+
+                    if (L.Browser.touch) {
+                        console.log(e.e.type);
+                        app.plot(e);
+                        console.timeEnd('Leaflet click');
+                    }
+
+                    if (L.Browser.ie && e.e.type === 'click') {
+                        app.plot(e);
                         console.timeEnd('Leaflet click');
                     }
                 },
@@ -217,8 +267,17 @@ var App = Backbone.View.extend({
         this.map.on('click', function(e) {
             app.marker.setLatLng(e.latlng);
             app.marker.addTo(app.map);
+
+            // hack to get touch events to work
+            // and force chrome to use the right location
+            e.trigger = true;
+            // console.log(e);
+            app.interaction.click(e, e.layerPoint);
             console.time('Leaflet click');
         });
+
+        _.defer(this.setView, 0, 0, 2);
+
     },
 
     setMapLayer: function(layer, active, options) {
@@ -260,7 +319,7 @@ var MapRouter = Backbone.Router.extend({
         });
     },
 
-    default: function() {
+    fallback: function() {
         var layer = this.app.menu.layers.first()
           , url = [layer.get('slug'), 2, 0, 0].join('/');
 
@@ -296,7 +355,7 @@ var MapRouter = Backbone.Router.extend({
         // update the map
         this.app.map.setView([lat, lng], zoom);
     }
-})
+});
 
 var TileJsonLayer = L.TileLayer.extend({
     initialize: function(options) {
@@ -306,12 +365,12 @@ var TileJsonLayer = L.TileLayer.extend({
         var tile_url = options.tiles[0].replace('a.tiles', '{s}.tiles');
         L.TileLayer.prototype.initialize.call(this, tile_url, options);
     }
-})
+});
 
 
 // when all is ready, create the app
 window.app = new App();
 if (!Backbone.history.start()) {
-    app.router.default();
+    app.router.fallback();
 }
 })();

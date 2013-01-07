@@ -2,6 +2,8 @@
 
 a:link, a:visited, a:hover, a:active {color:#000080;}
 
+a img {border: none; }
+
 body  {
     font-family: Arial, Helvetica, sans-serif;
     margin: 0px;
@@ -9,7 +11,6 @@ body  {
     font-size: 14px;
     height: 100%;
 }
-
 
 #header {
     position: fixed;
@@ -26,31 +27,16 @@ body  {
     left: 15px;
 }
 
-#header #title {
-    position: absolute;     
-    top: 0px;
-    padding:0px;
-    left: 250px;
-    font-size: 90%;
-
-  }
-
-#header #location {
-    position: absolute;
-    top: 14px;
-    right: 20px;
-}
-
 #header #search {
     position: absolute;
-    top: 13px;
-    right: 150px;
+    top: 25%;
+    right: 1%;
 }
 
 #header #menu {
     position: absolute;
-    top: 14px;
-    right: 500px;
+    top: 25%;
+    right: 45%;
 }
 
 #map {
@@ -61,17 +47,16 @@ body  {
     z-index:-1;
 }
     
-#map .zoomout {
-    top: 60px;
-    left: 320px;
-}
-#map .zoomin {
-    top: 60px;
-    left: 350px;
+#map .leaflet-top {
+    top: 50px;
 }
 
-#map .leaflet-top {
-    top: 60px;
+#map .leaflet-right {
+    right: 310px;
+}
+
+#map .leaflet-left {
+    left: 310px;
 }
 
 #panel {
@@ -89,7 +74,7 @@ body  {
     top: 60px;
     right: 10px;
     width: 300px;
-    height: 550px;
+    height: 490px;
 }
 
 #global-chart {
@@ -104,7 +89,6 @@ body  {
     height: 350px;
 }
 
-
 #legend {
     background: #ffffff;
     position: absolute;
@@ -118,7 +102,7 @@ body  {
     width: 270px;
     height: 10px;
     position: relative;
-    left: 10px;
+    left: 7px;
     opacity:0.4;
     filter:alpha(opacity=40); /* For IE8 and earlier */ 
 }

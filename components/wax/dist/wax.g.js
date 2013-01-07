@@ -1,4 +1,4 @@
-/* wax - 6.4.0 - v6.0.4-28-g4d63117 */
+/* wax - 6.4.2 - v6.0.4-31-g769f4ce */
 
 
 !function (name, context, definition) {
@@ -2264,7 +2264,9 @@ wax.gm = function() {
         formatter;
 
     var gridUrl = function(url) {
-        return url.replace(/(\.png|\.jpg|\.jpeg)(\d*)/, '.grid.json');
+        if (url) {
+            return url.replace(/(\.png|\.jpg|\.jpeg)(\d*)/, '.grid.json');
+        }
     };
 
     function templatedGridUrl(template) {
@@ -2294,9 +2296,16 @@ wax.gm = function() {
     };
 
     manager.gridUrl = function(x) {
+        // Getter-setter
         if (!arguments.length) return gridUrl;
-        gridUrl = typeof x === 'function' ?
-            x : templatedGridUrl(x);
+
+        // Handle tilesets that don't support grids
+        if (!x) {
+            gridUrl = function() { return null; };
+        } else {
+            gridUrl = typeof x === 'function' ?
+                x : templatedGridUrl(x);
+        }
         return manager;
     };
 
@@ -2322,9 +2331,10 @@ wax.gm = function() {
         } else if (x.formatter) {
             manager.formatter(x.formatter);
         } else {
+            // In this case, we cannot support grids
             formatter = undefined;
         }
-        if (x.grids) manager.gridUrl(x.grids);
+        manager.gridUrl(x.grids);
         if (x.resolution) resolution = x.resolution;
         tilejson = x;
         return manager;

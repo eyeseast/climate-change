@@ -1,0 +1,15 @@
+compress_assets: on
+gzip_assets: off
+
+javascripts:
+    app:
+        - components/jquery/jquery.js
+        - node_modules/underscore/underscore.js
+        - node_modules/backbone/backbone.js
+        - components/leaflet/leaflet-src.js
+        - components/wax/dist/wax.leaf.js
+        - components/highcharts/highcharts.js
+        - js/chart-data.js
+        - js/chart.js
+        - js/geocoder.js
+        - js/app.js

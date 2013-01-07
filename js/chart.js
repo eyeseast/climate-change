@@ -1,8 +1,7 @@
 var colors = {
     global5: '#b22222',
-    local5 : '#2b2b2b',
     local1 : '#808080'
-}
+};
 
 Highcharts.setOptions({
     chart: {
@@ -19,16 +18,15 @@ function localChart(container) {
     var chart = new Highcharts.Chart({
         chart: {
             renderTo: container,
-            type: 'line',
+            type: 'line'
         },
+
         credits: {
             enabled: false
         },
+        
         legend: {
             enabled: false
-        },
-        title: {
-            text: null
         },
         
         xAxis: {
@@ -46,25 +44,26 @@ function localChart(container) {
                     color: '#000000',
                     fontSize: '8pt',
                     fontWeight: '400' 
-                },
+                }
             },
             title: {
                 text: null
-            },
+            }
         },
         
         yAxis: {
-            max: 3.5,
-            min:-3.5,
+            max: 5,
+            min:-5,
             tickInterval: 1,
             lineColor: '#cccccc',
             lineWidth: 1,
             title: {
                 text: 'Difference from 1951-1980 average (°C)',
+                align: 'low',
                 style: {
                     color: '#000000',
-                    fontSize: '9pt',
-                    fontWeight: '400'
+                    fontSize: '10pt',
+                    fontWeight: '800'
                 }
             },
             labels: {
@@ -87,22 +86,21 @@ function localChart(container) {
             style: {
                      color: '#000000',
                      fontSize: '14px',
-                     fontWeight: '900',
+                     fontWeight: '900'
                 }
         },
         
         labels: {
-            items: [
-            {
-                html: 'Five-year average',
-                style: {
-                    top: '310px',
-                    left: '100px',
-                    color: '#b22222'
-                }
-            }
-            ]
-        },
+                items: [{
+                    html: 'Five-year average',
+                    style: {
+                        top: '260px',
+                        left: '105px',
+                        color: '#b22222'
+                     }
+                }]
+            },
+               
         
         plotOptions: {
             series: {
@@ -136,7 +134,7 @@ function localChart(container) {
         // local annual
         {
             name: 'Annual average',
-            data: GLOBAL_ONE_YEAR,
+            data: [],// GLOBAL_ONE_YEAR,
             pointStart: Date.UTC(1880, 6, 1),
             pointInterval: 365.25 * 24 * 3600 * 1000,// one year
             color: colors.local1, // '#808080',
@@ -146,7 +144,7 @@ function localChart(container) {
         // local five-year
         {
             name: 'Five-year average',
-            data: GLOBAL_FIVE_YEAR,
+            data: [],//GLOBAL_FIVE_YEAR,
             pointStart: Date.UTC(1880, 6, 1),
             pointInterval: 365.25 * 24 * 3600 * 1000,// one year
             color: colors.global5, // '#2b2b2b',
@@ -159,22 +157,19 @@ function localChart(container) {
     chart.fiveyear = chart.series[1];
 
     return chart;
-};
+}
 
 function globalChart(container) {
     var chart = new Highcharts.Chart({
         chart: {
             renderTo: container,
-            type: 'line',
+            type: 'line'
         },
         credits: {
-        enabled: false
+            enabled: false
         },
         legend: {
-        enabled: false
-        },
-        title: {
-            text: null
+            enabled: false
         },
         
         xAxis: {
@@ -192,12 +187,12 @@ function globalChart(container) {
                   color: '#000000',
                   fontSize: '8pt',
                   fontWeight: '400' 
-                },
+                }
                       
             },              
-            title: {
-            text: null
-            },
+                title: {
+                text: null
+            }
         },
         
         yAxis: {
@@ -216,7 +211,7 @@ function globalChart(container) {
             },
             labels: {
                 formatter: function() {
-                    return this.value; // clean, unformatted number for ice extent
+                    return this.value; // clean, unformatted number
                 },
                 style: {
                      color: '#000000',
@@ -234,7 +229,7 @@ function globalChart(container) {
             style: {
                      color: '#000000',
                      fontSize: '14px',
-                     fontWeight: '900',
+                     fontWeight: '900'
                 }
         },
         

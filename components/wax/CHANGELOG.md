@@ -1,5 +1,16 @@
 ## Changelog
 
+## 6.4.2
+
+* Binds `wax.mm.zoomer()` controls to `touchstart` events to make
+  them more responsive on mobile devices.
+
+## 6.4.1
+
+* The `wax.gridmanager()` code now sets the `gridUrl` getter
+  to a functor for `null` when the `grids` argument is not present
+  in the TileJSON chunk.
+
 ## 6.4.0
 
 * Improve the style of zoom controls, matching that of MapBox
