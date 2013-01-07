@@ -172,6 +172,8 @@ var App = Backbone.View.extend({
     setMarker: function(lat, lng) {
         // set a marker, not a view
         var app = this;
+        this.showSpinner();
+        console.time('Redraw');
         this.marker.setLatLng([lat, lng]);
         this.marker.addTo(this.map);
         
@@ -184,6 +186,8 @@ var App = Backbone.View.extend({
             app.plotSeries('annual', annual, false);
             app.plotSeries('fiveyear', fiveyear, false);
             app.highchart.redraw();
+            app.stopSpinner();
+            console.timeEnd('Redraw');
         }
     },
 

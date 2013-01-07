@@ -4,7 +4,7 @@ function Grid(path) {
     // pass in a base path to grid data
     // should be data/grid
     this.path = path;
-    this.cache = {};
+    this.cache = { hits: 0, misses: 0 };
 
     _.bindAll(this);
 }
@@ -26,18 +26,18 @@ Grid.prototype.getTile = function(lat, lng, cb) {
     // fetch the actual tile data
     // check cache first
     var url = this.getTileUrl(lat, lng)
-      , key = lat + ':' + lng
       , grid = this;
 
-    if (_.has(this.cache, key)) {
-        if (_.isFunction(cb)) { cb(null, this.cache[key]); }
-        return this.cache[key];
+    if (_.has(this.cache, url)) {
+        if (_.isFunction(cb)) { cb(null, this.cache[url]); }
+        this.cache.hits++;
+        return this.cache[url];
     }
-
+    this.cache.misses++;
     return jQuery.ajax({
         url: url,
         success: function(data) {
-            grid.cache[key] = data;
+            grid.cache[url] = data;
             if (_.isFunction(cb)) { cb(null, data); }
         },
 
