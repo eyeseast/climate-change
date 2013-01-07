@@ -5,6 +5,8 @@ function Grid(path) {
     // should be data/grid
     this.path = path;
     this.cache = {};
+
+    _.bindAll(this);
 }
 
 Grid.prototype.getUrl = function(lat, lng) {
@@ -28,11 +30,19 @@ Grid.prototype.getTile = function(lat, lng, cb) {
       , grid = this;
 
     if (_.has(this.cache, key)) {
+        if (_.isFunction(cb)) { cb(null, this.cache[key]); }
         return this.cache[key];
     }
 
-    return jQuery.getJSON(url).success(function(data) {
-        grid.cache[key] = data;
-        if (_.isFunction(cb)) { cb(data); }
+    return jQuery.ajax({
+        url: url,
+        success: function(data) {
+            grid.cache[key] = data;
+            if (_.isFunction(cb)) { cb(null, data); }
+        },
+
+        error: function(jqxhr, mgs, err) {
+            if (_.isFunction(cb)) { cb(err, null); }
+        }
     });
 };

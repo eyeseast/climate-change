@@ -108,8 +108,16 @@ var App = Backbone.View.extend({
         this.highchart = localChart('local-chart');
         this.globalchart = globalChart('global-chart');
         this.menu = new LayerMenu({ app: this });
+
+        // map parts
         this.map = this.createMap(this.menu.layers.first().url(), this.setupMap);
         this.marker = L.marker([0,0], { clickable: false });
+
+        // grid data
+        this.annual = new Grid('data/grid/annual');
+        this.fiveyear = new Grid('data/grid/fiveyear');
+
+        // stash a spinner
         this.spinner = new Spinner({
             lines: 9,
             length: 4,
@@ -209,9 +217,37 @@ var App = Backbone.View.extend({
         console.timeEnd('Redraw');
     },
 
+    plotSeries: function(series, data, redraw) {
+        this.highchart[series].setData(data, redraw);
+    },
+
     setupMap: function(map, tilejson) {
         var app = this;
 
+        map.on('click', function(e) {
+            /***
+            app.annual.getTile(e.latlng.lat, e.latlng.lng, function(data) {
+                app.plotSeries('annual', data, false);
+            });
+
+            app.fiveyear.getTile(e.latlng.lat, e.latlng.lng, function(data) {
+                app.plotSeries('fiveyear', data, false);
+            });
+            ***/
+            queue()
+                .defer(app.annual.getTile, e.latlng.lat, e.latlng.lng)
+                .defer(app.fiveyear.getTile, e.latlng.lat, e.latlng.lng)
+                .await(redraw);
+
+            function redraw(err, annual, fiveyear) {
+                app.plotSeries('annual', annual, false);
+                app.plotSeries('fiveyear', fiveyear, false);
+                app.highchart.redraw();
+            }
+            
+        })
+
+        /*** no UTFGrid
         this.interaction = wax.leaf.interaction()
             .map(map)
             .tilejson(tilejson)
@@ -249,6 +285,7 @@ var App = Backbone.View.extend({
             app.interaction.click(e, e.layerPoint);
             console.time('Leaflet click');
         });
+        ***/
 
         _.defer(this.setView, 0, 0, 2);
 
