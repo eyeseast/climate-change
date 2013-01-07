@@ -194,6 +194,7 @@ var App = Backbone.View.extend({
 
     plot: function(e) {
         console.time('Redraw');
+        app.e = e;
         this.highchart.annual.setData(JSON.parse(e.data.annual), false);
         this.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear), false);
         this.highchart.redraw();
@@ -211,14 +212,19 @@ var App = Backbone.View.extend({
                 
                 on: function(e) {
                     if (e.e.trigger) {
-                        app.e = e;
                         app.plot(e);
                         console.timeEnd('Leaflet click');
                     }
 
                     if (L.Browser.touch) {
-                        app.e = e;
                         console.log(e.e.type);
+                        app.plot(e);
+                        console.timeEnd('Leaflet click');
+                    }
+
+                    if (L.Browser.ie && e.e.type === 'click') {
+                        app.plot(e);
+                        console.timeEnd('Leaflet click');
                     }
                 },
                 
