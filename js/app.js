@@ -152,7 +152,7 @@ var App = Backbone.View.extend({
                 // window.resp = resp;
                 if (resp.results) {
                     var loc = resp.results[0][0];
-                    app.setView(loc.lat, loc.lon, null, e);                    
+                    app.setView([loc.lat, loc.lon], null, e);                    
                 }
             });
         }
@@ -165,7 +165,7 @@ var App = Backbone.View.extend({
         var app = this;
         app.map.locate()
             .on('locationfound', function(e) {
-                app.setView(e.latlng.lat, e.latlng.lng, null, e);
+                app.setView([e.latlng.lat, e.latlng.lng], null, e);
             });
     },
 
