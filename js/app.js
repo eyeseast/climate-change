@@ -169,18 +169,30 @@ var App = Backbone.View.extend({
             });
     },
 
+    setMarker: function(lat, lng) {
+        // set a marker, not a view
+        var app = this;
+        this.marker.setLatLng([lat, lng]);
+        this.marker.addTo(this.map);
+        
+        queue()
+            .defer(app.annual.getTile, lat, lng)
+            .defer(app.fiveyear.getTile, lat, lng)
+            .await(redraw);
+
+        function redraw(err, annual, fiveyear) {
+            app.plotSeries('annual', annual, false);
+            app.plotSeries('fiveyear', fiveyear, false);
+            app.highchart.redraw();
+        }
+    },
+
     setView: function(lat, lng, zoom, e) {
         zoom = (zoom || this.map.getMaxZoom());
         e = (e || { type: 'click' });
         var c = L.latLng([lat, lng]);
         this.map.setView(c, zoom);
-
-        //this.marker.setLatLng(c);
-        //this.marker.addTo(this.map);
-        // fake a click
-        //e.trigger = true;
-        //this.interaction.click(e, this.map.latLngToLayerPoint(c));
-
+        this.setMarker(lat, lng);
         return this;
     },
 
@@ -225,27 +237,10 @@ var App = Backbone.View.extend({
         var app = this;
 
         map.on('click', function(e) {
-            /***
-            app.annual.getTile(e.latlng.lat, e.latlng.lng, function(data) {
-                app.plotSeries('annual', data, false);
-            });
 
-            app.fiveyear.getTile(e.latlng.lat, e.latlng.lng, function(data) {
-                app.plotSeries('fiveyear', data, false);
-            });
-            ***/
-            queue()
-                .defer(app.annual.getTile, e.latlng.lat, e.latlng.lng)
-                .defer(app.fiveyear.getTile, e.latlng.lat, e.latlng.lng)
-                .await(redraw);
-
-            function redraw(err, annual, fiveyear) {
-                app.plotSeries('annual', annual, false);
-                app.plotSeries('fiveyear', fiveyear, false);
-                app.highchart.redraw();
-            }
+            app.setMarker(e.latlng.lat, e.latlng.lng, map.getZoom(), e);
             
-        })
+        });
 
         /*** no UTFGrid
         this.interaction = wax.leaf.interaction()
