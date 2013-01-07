@@ -19,6 +19,10 @@ Grid.prototype.getTileUrl = function(lat, lng) {
     lat = Math.floor(lat / 2) * 2;
     lng = Math.floor(lng / 2) * 2;
 
+    // this makes me worry about my math
+    if (lng > 179) { lng = 178; }
+    if (lng < -180) { lng = -180; }
+    
     return this.getUrl(lat, lng);
 };
 

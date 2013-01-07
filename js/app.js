@@ -169,17 +169,19 @@ var App = Backbone.View.extend({
             });
     },
 
-    setMarker: function(lat, lng) {
+    setMarker: function(latlng) {
         // set a marker, not a view
         var app = this;
+        latlng = L.latLng(latlng);
         this.showSpinner();
         console.time('Redraw');
-        this.marker.setLatLng([lat, lng]);
+        this.marker.setLatLng(latlng);
         this.marker.addTo(this.map);
+        console.log(latlng);
         
         queue()
-            .defer(app.annual.getTile, lat, lng)
-            .defer(app.fiveyear.getTile, lat, lng)
+            .defer(app.annual.getTile, latlng.lat, latlng.lng)
+            .defer(app.fiveyear.getTile, latlng.lat, latlng.lng)
             .await(redraw);
 
         function redraw(err, annual, fiveyear) {
@@ -191,12 +193,12 @@ var App = Backbone.View.extend({
         }
     },
 
-    setView: function(lat, lng, zoom, e) {
+    setView: function(latlng, zoom, e) {
         zoom = (zoom || this.map.getMaxZoom());
         e = (e || { type: 'click' });
-        var c = L.latLng([lat, lng]);
-        this.map.setView(c, zoom);
-        this.setMarker(lat, lng);
+        //var c = L.latLng(latlng);
+        this.map.setView(latlng, zoom);
+        this.setMarker(latlng);
         return this;
     },
 
@@ -242,7 +244,7 @@ var App = Backbone.View.extend({
 
         map.on('click', function(e) {
 
-            app.setMarker(e.latlng.lat, e.latlng.lng, map.getZoom(), e);
+            app.setMarker(e.latlng, map.getZoom(), e);
             
         });
 
@@ -286,7 +288,7 @@ var App = Backbone.View.extend({
         });
         ***/
 
-        _.defer(this.setView, 0, 0, 2);
+        _.defer(this.setView, [0, 0], 2);
 
     },
 
