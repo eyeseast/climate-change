@@ -1,4 +1,13 @@
 (function() {
+// ensure console
+if (_.isUndefined(window.console)) {
+    window.console = {
+        log: function() {},
+        time: function() {},
+        timeEnd: function() {}
+    }
+}
+
 // fix Leaflet's image problem
 L.Icon.Default.imagePath = "components/leaflet/images";
 
@@ -251,7 +260,9 @@ var App = Backbone.View.extend({
             app.setMarker(marker.getLatLng());
         });
 
-        this.setView([0, 0], 2);
+        jQuery(function($) {
+            app.setView([0, 0], 2);
+        });
 
     },
 
