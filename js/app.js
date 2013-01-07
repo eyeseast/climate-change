@@ -1,4 +1,7 @@
 (function() {
+// fix Leaflet's image problem
+L.Icon.Default.imagePath = "components/leaflet/images";
+
 var Layer = Backbone.Model.extend({
 
     defaults: {
