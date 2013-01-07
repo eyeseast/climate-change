@@ -251,7 +251,7 @@ var App = Backbone.View.extend({
             app.setMarker(marker.getLatLng());
         });
 
-        _.defer(this.setView, [0, 0], 2);
+        this.setView([0, 0], 2);
 
     },
 
