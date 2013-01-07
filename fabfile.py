@@ -5,6 +5,16 @@ env.repos = {
     'newsci': ['master', 'master:gh-pages']
 }
 
+env.grids = {
+    'annual': 'data/annual.csv',
+    'fiveyear': 'data/5year.csv'
+}
+
+def shard():
+    for data_type, filename in env.grids.items():
+        local('python bin/shard.py %s %s' % (filename, data_type))
+
+
 def deploy():
     for remote, branches in env.repos.items():
         for branch in branches:

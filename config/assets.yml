@@ -10,6 +10,8 @@ javascripts:
         - components/wax/dist/wax.leaf.js
         - components/highcharts/highcharts.js
         - components/spin.js/spin.js
+        - components/queue/queue.js
+        - js/grid.js
         - js/chart-data.js
         - js/chart.js
         - js/geocoder.js
