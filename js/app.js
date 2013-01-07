@@ -203,7 +203,7 @@ var App = Backbone.View.extend({
     },
 
     createMap: function(url, cb) {
-        var map = L.map('map', { worldCopyJump: false })
+        var map = L.map('map', { worldCopyJump: true })
           , app = this;
 
         wax.tilejson(url, function(tilejson) {
