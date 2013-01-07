@@ -7,7 +7,7 @@ Geocoder.prototype.geocode = function(location, cb) {
     var params = {
         location: location,
         key: this.key
-    }
+    };
 
     var url = "http://www.mapquestapi.com/geocoding/v1/address?" + $.param(params);
 
@@ -20,7 +20,7 @@ Geocoder.prototype.geocode = function(location, cb) {
 
 function mapbox_geocode(query, cb) {
     // "http://a.tiles.mapbox.com/v3/newscientist26102012.map-z33q8ey1/geocode/london.json"
-    var url = "http://a.tiles.mapbox.com/v3/newscientist26102012.map-z33q8ey1/geocode/" 
+    var url = "http://a.tiles.mapbox.com/v3/newscientist26102012.map-z33q8ey1/geocode/"
         + encodeURIComponent(query).toLowerCase()
         + ".json";
 

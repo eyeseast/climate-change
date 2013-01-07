@@ -86,7 +86,7 @@ var mapOptions = {
     minzoom: 2,
     maxzoom: 6,
     unloadInvisibleTiles: true
-}
+};
 
 var App = Backbone.View.extend({
 
@@ -262,9 +262,10 @@ var TileJsonLayer = L.TileLayer.extend({
         var tile_url = options.tiles[0].replace('a.tiles', '{s}.tiles');
         L.TileLayer.prototype.initialize.call(this, tile_url, options);
     }
-})
+});
 
 
 // when all is ready, create the app
 window.app = new App();
+
 })();

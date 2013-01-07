@@ -1,7 +1,7 @@
 var colors = {
     global5: '#b22222',
     local1 : '#808080'
-}
+};
 
 Highcharts.setOptions({
     chart: {
@@ -18,16 +18,15 @@ function localChart(container) {
     var chart = new Highcharts.Chart({
         chart: {
             renderTo: container,
-            type: 'line',
+            type: 'line'
         },
+
         credits: {
             enabled: false
         },
+        
         legend: {
             enabled: false
-        },
-        title: {
-            text: null
         },
         
         xAxis: {
@@ -45,11 +44,11 @@ function localChart(container) {
                     color: '#000000',
                     fontSize: '8pt',
                     fontWeight: '400' 
-                },
+                }
             },
             title: {
                 text: null
-            },
+            }
         },
         
         yAxis: {
@@ -87,20 +86,20 @@ function localChart(container) {
             style: {
                      color: '#000000',
                      fontSize: '14px',
-                     fontWeight: '900',
+                     fontWeight: '900'
                 }
         },
         
         labels: {
-        		items: [{
-           			html: 'Five-year average',
-            		style: {
-                		top: '260px',
-                		left: '105px',
-                		color: '#b22222'
-           			 },
-        		}]
-    		},
+                items: [{
+                    html: 'Five-year average',
+                    style: {
+                        top: '260px',
+                        left: '105px',
+                        color: '#b22222'
+                     }
+                }]
+            },
                
         
         plotOptions: {
@@ -158,22 +157,19 @@ function localChart(container) {
     chart.fiveyear = chart.series[1];
 
     return chart;
-};
+}
 
 function globalChart(container) {
     var chart = new Highcharts.Chart({
         chart: {
             renderTo: container,
-            type: 'line',
+            type: 'line'
         },
         credits: {
-        enabled: false
+            enabled: false
         },
         legend: {
-        enabled: false
-        },
-        title: {
-            text: null
+            enabled: false
         },
         
         xAxis: {
@@ -191,12 +187,12 @@ function globalChart(container) {
                   color: '#000000',
                   fontSize: '8pt',
                   fontWeight: '400' 
-                },
+                }
                       
             },              
-            title: {
-            text: null
-            },
+                title: {
+                text: null
+            }
         },
         
         yAxis: {
@@ -233,7 +229,7 @@ function globalChart(container) {
             style: {
                      color: '#000000',
                      fontSize: '14px',
-                     fontWeight: '900',
+                     fontWeight: '900'
                 }
         },
         
