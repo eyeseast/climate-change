@@ -110,5 +110,10 @@ body  {
 #legend #source {
     font-size: 90%;
 } 
- 
+
+#spinner {
+    position: relative;
+    float: right;
+    margin: 20px 20px 0 20px;
+}
 

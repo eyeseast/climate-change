@@ -1,0 +1,15 @@
+{
+  "name": "spin.js",
+  "version": "0.0.0",
+  "main": "./dist/spin.js",
+  "dependencies": {},
+  "readme": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/fgnass/spin.js.git"
+  },
+  "gitHead": "63b791dd1e7139694f1caf02726dab1ac33e0177",
+  "_id": "spin@1.2.7",
+  "description": "README.md",
+  "commit": "63b791dd1e7139694f1caf02726dab1ac33e0177"
+}

@@ -110,6 +110,12 @@ var App = Backbone.View.extend({
         this.menu = new LayerMenu({ app: this });
         this.map = this.createMap(this.menu.layers.first().url(), this.setupMap);
         this.marker = L.marker([0,0], { clickable: false });
+        this.spinner = new Spinner({
+            lines: 9,
+            length: 4,
+            width: 4,
+            radius: 5
+        });
 
         return this;
     },
@@ -199,6 +205,7 @@ var App = Backbone.View.extend({
         this.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear), false);
         this.highchart.redraw();
         // console.log([e.data.lat_id, e.data.lng_id]);
+        this.stopSpinner();
         console.timeEnd('Redraw');
     },
 
@@ -237,8 +244,8 @@ var App = Backbone.View.extend({
 
             // hack to get touch events to work
             // and force chrome to use the right location
+            app.showSpinner();
             e.trigger = true;
-            // console.log(e);
             app.interaction.click(e, e.layerPoint);
             console.time('Leaflet click');
         });
@@ -260,6 +267,17 @@ var App = Backbone.View.extend({
             app.layer = new TileJsonLayer(tilejson);
             map.addLayer(app.layer);
         });
+    },
+
+    showSpinner: function() {
+        this.spinner.spin();
+        $('#spinner').append(this.spinner.el);
+        return this;
+    },
+
+    stopSpinner: function() {
+        this.spinner.stop();
+        return this;
     }
 });
 

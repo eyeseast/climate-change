@@ -9,6 +9,7 @@ javascripts:
         - components/leaflet/leaflet-src.js
         - components/wax/dist/wax.leaf.js
         - components/highcharts/highcharts.js
+        - components/spin.js/spin.js
         - js/chart-data.js
         - js/chart.js
         - js/geocoder.js
