@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Store grid data in a sharded file tree. Any 2x2 grid square should be accessible at a URL like:
 
@@ -57,8 +58,8 @@ def shard(file, data_type='annual', prefix='grid'):
     Save grid data.
     """
     # latitudes and longitudes are known
-    latitudes = range(-89, 89, 2)
-    longitudes = range(-179, 179, 2)
+    latitudes = range(-89, 91, 2)
+    longitudes = range(-179, 181, 2)
 
     # read data once
     reader = csv.DictReader(file)
@@ -72,16 +73,32 @@ def shard(file, data_type='annual', prefix='grid'):
             temps = get_temps(data, lat, lng)
             
             # ensure we have a place to put it
-            dirname = os.path.join(base, str(lat))
+            # shift one degree in each direction
+            # to get a grid edge
+            dirname = os.path.join(base, str(lat - 1))
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
 
             # write the actual file
-            path = os.path.join(dirname, '%i.json' % lng)
+            path = os.path.join(dirname, '%i.json' % (lng - 1))
             with open(path, 'wb') as f:
                 f.write(json.dumps(temps))
                 print "File: %s - %i" % (path, len(temps))
 
 
+usage = """
+Usage:
+    shard.py <filename> <data_type>
+        """
 
+
+if __name__ == '__main__':
+    if len(sys.argv) > 2:
+        filename = sys.argv[1]
+        data_type = sys.argv[2]
+        with open(filename) as f:
+            shard(f, data_type)
+
+    else:
+        print usage
 
