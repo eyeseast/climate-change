@@ -111,7 +111,7 @@ var App = Backbone.View.extend({
 
         // map parts
         this.map = this.createMap(this.menu.layers.first().url(), this.setupMap);
-        this.marker = L.marker([0,0], { clickable: false });
+        this.marker = L.marker([0,0], { clickable: true, draggable: true });
 
         // grid data
         this.annual = new Grid('data/grid/annual');
@@ -243,50 +243,13 @@ var App = Backbone.View.extend({
         var app = this;
 
         map.on('click', function(e) {
-
             app.setMarker(e.latlng, map.getZoom(), e);
-            
         });
 
-        /*** no UTFGrid
-        this.interaction = wax.leaf.interaction()
-            .map(map)
-            .tilejson(tilejson)
-            .on({
-                
-                on: function(e) {
-                    if (e.e.trigger) {
-                        app.plot(e);
-                        console.timeEnd('Leaflet click');
-                    }
-
-                    if (L.Browser.touch) {
-                        console.log(e.e.type);
-                        app.plot(e);
-                        console.timeEnd('Leaflet click');
-                    }
-
-                    if (L.Browser.ie && e.e.type === 'click') {
-                        app.plot(e);
-                        console.timeEnd('Leaflet click');
-                    }
-                },
-                
-                off: function() {}
-            });
-
-        this.map.on('click', function(e) {
-            app.marker.setLatLng(e.latlng);
-            app.marker.addTo(app.map);
-
-            // hack to get touch events to work
-            // and force chrome to use the right location
-            app.showSpinner();
-            e.trigger = true;
-            app.interaction.click(e, e.layerPoint);
-            console.time('Leaflet click');
+        this.marker.on('dragend', function(e) {
+            var marker = e.target;
+            app.setMarker(marker.getLatLng());
         });
-        ***/
 
         _.defer(this.setView, [0, 0], 2);
 
