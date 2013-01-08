@@ -32,8 +32,8 @@ var LayerSet = Backbone.Collection.extend({
 
 var layers = new LayerSet([
     {
-        id: "newscientist26102012.1992-2011",
-        name: "1992 - 2011"
+        id: "newscientist26102012.1993-2012",
+        name: "1993 - 2013"
     },
     
     {
