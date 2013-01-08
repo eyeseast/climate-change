@@ -116,6 +116,8 @@ var App = Backbone.View.extend({
         this.cache = { hits: 0, misses: 0 };
         this.highchart = localChart('local-chart');
         this.globalchart = globalChart('global-chart');
+
+        // menu, with layers
         this.menu = new LayerMenu({ app: this });
 
         // map parts
@@ -245,7 +247,15 @@ var App = Backbone.View.extend({
     },
 
     plotSeries: function(series, data, redraw) {
-        this.highchart[series].setData(data, redraw);
+
+        // i hate ie8
+        var serieses = {
+            annual: this.highchart.series[0],
+            fiveyear: this.highchart.series[1]
+        };
+
+        var series = serieses[series];
+        series.setData(data, redraw);
     },
 
     setupMap: function(map, tilejson) {
