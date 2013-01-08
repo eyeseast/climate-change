@@ -43,6 +43,7 @@ def get_temps(data, lat_id, lng_id):
 def make_path(base, lat, lng):
     path = os.path.join(base, str(lat), '%i.json' % (lng))
 
+
 def safe_float(n, nulls=['9999', 'null', '']):
     if n in nulls:
         return None
