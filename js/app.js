@@ -33,7 +33,7 @@ var LayerSet = Backbone.Collection.extend({
 var layers = new LayerSet([
     {
         id: "newscientist26102012.1993-2012",
-        name: "1993 - 2013"
+        name: "1993 - 2012"
     },
     
     {
@@ -185,10 +185,10 @@ var App = Backbone.View.extend({
         var app = this;
         latlng = L.latLng(latlng);
         this.showSpinner();
-        console.time('Redraw');
+        // console.time('Redraw');
         this.marker.setLatLng(latlng);
         this.marker.addTo(this.map);
-        console.log(latlng);
+        // console.log(latlng);
         
         queue()
             .defer(app.annual.getTile, latlng.lat, latlng.lng)
@@ -200,7 +200,7 @@ var App = Backbone.View.extend({
             app.plotSeries('fiveyear', fiveyear, false);
             app.highchart.redraw();
             app.stopSpinner();
-            console.timeEnd('Redraw');
+            // console.timeEnd('Redraw');
         }
     },
 
@@ -236,14 +236,14 @@ var App = Backbone.View.extend({
     },
 
     plot: function(e) {
-        console.time('Redraw');
+        //console.time('Redraw');
         app.e = e;
         this.highchart.annual.setData(JSON.parse(e.data.annual), false);
         this.highchart.fiveyear.setData(JSON.parse(e.data.fiveyear), false);
         this.highchart.redraw();
         // console.log([e.data.lat_id, e.data.lng_id]);
         this.stopSpinner();
-        console.timeEnd('Redraw');
+        //console.timeEnd('Redraw');
     },
 
     plotSeries: function(series, data, redraw) {
