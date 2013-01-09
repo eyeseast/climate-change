@@ -5,7 +5,7 @@ if (_.isUndefined(window.console)) {
         log: function() {},
         time: function() {},
         timeEnd: function() {}
-    }
+    };
 }
 
 // fix Leaflet's image problem
@@ -20,7 +20,7 @@ var Layer = Backbone.Model.extend({
     },
 
     url: function() {
-        var ids = ['mapbox.world-light', this.id, 'newscientist26102012.climate-grid'];
+        var ids = ['mapbox.world-light', this.id].join(',');
         return "http://a.tile.mapbox.com/v3/" + ids + ".jsonp";
     }
 });
@@ -221,12 +221,14 @@ var App = Backbone.View.extend({
             _.extend(tilejson, mapOptions);
             app.tilejson = tilejson;
             app.layer = new TileJsonLayer(tilejson);
-            var c = tilejson.center;
-            map.addLayer(app.layer)
-                .setView([c[1], c[0]], 2);
+
+            map.addLayer(app.layer);
 
             // put zoom controls in the upper right
             // map.zoomControl.setPosition('topright');
+
+            // remove leaflet attribution, sorry leaflet
+            map.attributionControl.setPrefix('');
 
             if (_.isFunction(cb)) cb(map, tilejson);
         });
@@ -254,7 +256,7 @@ var App = Backbone.View.extend({
             fiveyear: this.highchart.series[1]
         };
 
-        var series = serieses[series];
+        series = serieses[series];
         series.setData(data, redraw);
     },
 
@@ -271,7 +273,7 @@ var App = Backbone.View.extend({
         });
 
         jQuery(function($) {
-            app.setView([0, 0], 2);
+            app.setView([50, 0], 2);
         });
 
     },

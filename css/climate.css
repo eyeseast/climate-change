@@ -87,7 +87,8 @@ body  {
 #global-chart {
     position: relative; 
     width: 275px; 
-    height: 125px
+    height: 125px;
+    margin-top: 1.5em;
 }
 
 #local-chart {
