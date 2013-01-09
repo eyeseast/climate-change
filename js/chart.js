@@ -249,16 +249,7 @@ function globalChart(container) {
         },
         
         tooltip: {
-                backgroundColor: 'white',
-                style: {
-                   fontWeight: '400',
-                   fontSize: '10pt'
-                }, 
-                xDateFormat: '<strong>%Y</strong><br>',
-                shared: true,
-                borderWidth: 0,
-                valueDecimals: 2,
-                valueSuffix: ' °C'
+                enabled: false
         },
                           
         series: [

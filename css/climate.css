@@ -2,6 +2,8 @@
 
 a:link, a:visited, a:hover, a:active {color:#000080;}
 
+#back a {color:#ffffff;}
+
 a img {border: none; }
 
 body  {
@@ -38,6 +40,11 @@ body  {
     top: 25%;
     right: 45%;
 }
+
+#header #back {
+    position: absolute;
+    right: 1%;
+} 
 
 #map {
     position: absolute;
@@ -111,6 +118,16 @@ body  {
     font-size: 90%;
 } 
 
+#content {
+    background: #ffffff;
+    position:relative;
+    top: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px 10px;
+    width: 800px;
+}
+ 
 #spinner {
     position: relative;
     float: right;

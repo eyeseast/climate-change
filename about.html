@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="css/climate.css" rel="stylesheet" type="text/css" />
+    <script src='http://api.tiles.mapbox.com/mapbox.js/v0.6.6/mapbox.js'></script>
+    <link href='http://api.tiles.mapbox.com/mapbox.js/v0.6.6/mapbox.css' rel='stylesheet' />
+
+    <title>Your warming world | New Scientist</title>
+
+</head>
+
+<body>
+    
+    <div id="header">
+
+        <a href="http://www.newscientist.com/" target="_blank"><img src="img/NSlogo.png" alt="NS logo"/></a>
+        <p id="back"><a href="index.html" target="_parent">Back to interactive</a></p>
+          
+    </div>
+
+    <div id="content">
+    
+    <h2>YOUR WARMING WORLD</h2>
+
+    <h3>About the data</h3> 
+
+    <p>This interactive displays results from the <a href=" http://data.giss.nasa.gov/gistemp/" target="_blank">GISTEMP analysis</a>, a global dataset of surface temperatures from 1880 to the present day, produced by a team at NASA’s <a href=" http://www.giss.nasa.gov/about/" target="_blank">Goddard Institute for Space Studies</a> in New York City. </p>
+
+    <p>The graphs and maps all show changes relative to average temperatures for the three decades from 1951 to 1980, the earliest for which there was sufficiently good coverage for comparison. This gives a consistent view of climate change across the globe. To put these numbers in context, the NASA team estimates that the global average temperature for the 1951-1980 baseline period was about 14 °C.</p>
+
+    <p>The analysis uses land-based temperature measurements from some 6000 monitoring stations in the <a href="http://www.ncdc.noaa.gov/ghcnm/v3.php" target="_blank"> Global Historical Climatology Network</a>, plus records from Antarctic stations recorded by the <a href="http://www.antarctica.ac.uk/met/READER/" target="_blank">Scientific Committee on Antarctic Research</a>. Temperatures at the ocean surface come from a <a href="http://www.metoffice.gov.uk/hadobs/hadisst/" target="_blank"> measurements made by ships</a> from 1880 to 1981, plus <a href="http://www.esrl.noaa.gov/psd/data/gridded/data.noaa.oisst.v2.html" target="_blank">satellite measurements</a> from 1982 onwards. </p>
+
+    <p>Surface temperature measurements are not evenly distributed across the globe. So the NASA team interpolates from the available data to calculate average temperatures for cells in a global grid, with each cell measuring 2 degrees latitude by 2 degrees longitude. The analysis extrapolates up to 1200 kilometres from any one station, which allows for more complete coverage in the Arctic – where monitoring stations are sparsely distributed, but where the warming trend is especially strong. </p>
+
+    <p>The NASA team also corrects the data to remove local heating caused by dense human settlements – a phenomenon known as the <a href="http://www.epa.gov/hiri/" target="_blank">urban heat island effect</a>. Temperature stations in urban areas are identified by referring to satellite images of the light they give off at night, and their records are adjusted to reflect the average trend of nearby rural stations.</>
+
+    <h3>Credits</h3> 
+
+    <p>Interactive built by <a href="http://www.chrisamico.com/about/" target="_blank">Chris Amico</a> and <a href=" http://www.peteraldhous.com/" target="_blank">Peter Aldhous</a>.</p>
+
+    <p>NASA GISTEMP analysis by <a href="http://www.giss.nasa.gov/staff/jhansen.html" target="_blank">James Hansen</a>, <a href="http://www.giss.nasa.gov/staff/rruedy.html" target="_blank">Reto Ruedy<a/>, <a href="http://www.giss.nasa.gov/staff/makiko_sato.html" target="_blank">Makiko Sato</a> and <a href="http://www.giss.nasa.gov/staff/klo.html " target="_blank">Ken Lo</a>. Thanks to <a href=" http://www.giss.nasa.gov/staff/rschmunk.html" target="_blank">Robert Schmunk</a> for help obtaining data.</p>
+    
+    </div>
+                        
+    <div id="map"></div>
+    
+    <script>
+
+    var map = mapbox.map('map');
+    var layers = document.getElementById('map-ui');
+
+    map.addLayer(mapbox.layer().id('mapbox.world-light'));
+    map.addLayer(mapbox.layer().id('newscientist26102012.1992-2011'));
+    map.zoom(2);
+  
+    map.center({ lat: 50, lon: 0 });
+  
+    map.setZoomRange(2, 2);
+  
+    </script>
+
+</body>
+</html>
+
