@@ -53,3 +53,5 @@ def global_data(filename='data/global.csv'):
 
         with open('js/chart-data.js', 'wb') as out:
             out.write(TEMPLATE % {'annual': json.dumps(annual), 'fiveyear': json.dumps(fiveyear)})
+
+    local('jammit')
