@@ -273,7 +273,7 @@ var App = Backbone.View.extend({
         });
 
         jQuery(function($) {
-            app.setView([50, 0], 2);
+            app.setView([50, 0], 3);
         });
 
     },
