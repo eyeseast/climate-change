@@ -6,6 +6,7 @@
     <link href="css/climate.css" rel="stylesheet" type="text/css" />
     <script src='http://api.tiles.mapbox.com/mapbox.js/v0.6.6/mapbox.js'></script>
     <link href='http://api.tiles.mapbox.com/mapbox.js/v0.6.6/mapbox.css' rel='stylesheet' />
+    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
 
     <title>Climate Change | New Scientist</title>
 
@@ -32,13 +33,18 @@
 
     <p>Surface temperature measurements are not evenly distributed across the globe. So the NASA team interpolates from the available data to calculate average temperatures for cells in a global grid, with each cell measuring 2 degrees latitude by 2 degrees longitude. The analysis extrapolates up to 1200 kilometres from any one station, which allows for more complete coverage in the Arctic – where monitoring stations are sparsely distributed, but where the warming trend is especially strong. </p>
 
-    <p>The NASA team also corrects the data to remove local heating caused by dense human settlements – a phenomenon known as the <a href="http://www.epa.gov/hiri/" target="_blank">urban heat island effect</a>. Temperature stations in urban areas are identified by referring to satellite images of the light they give off at night, and their records are adjusted to reflect the average trend of nearby rural stations.</>
+    <p>The NASA team also corrects the data to remove local heating caused by dense human settlements – a phenomenon known as the <a href="http://www.epa.gov/hiri/" target="_blank">urban heat island effect</a>. Temperature stations in urban areas are identified by referring to satellite images of the light they give off at night, and their records are adjusted to reflect the average trend of nearby rural stations.</p>
+
+    <p><strong>Update, 2 April 2013:</strong> In some locations, monitoring stations were very sparsely distributed for parts of the historical record. When the number of stations in a given region is very low, reporting errors from individual stations may distort the temperature data. For example, the West African nation of Cameroon appears to have been unusually warm in the 1920s and 30s, but the records used to estimate the temperature for this area during that period came from just six stations. In such cases, a detailed investigation into the history of the stations involved would be required to draw specific conclusions about the historical temperature record. </p>
+
 
     <h3>Credits</h3> 
 
     <p>Interactive built by <a href="http://www.chrisamico.com/about/" target="_blank">Chris Amico</a> and <a href=" http://www.peteraldhous.com/" target="_blank">Peter Aldhous</a>.</p>
 
     <p>NASA GISTEMP analysis by <a href="http://science.gsfc.nasa.gov/earth/giss/index.cfm?fuseAction=people.jumpBio&&iPhonebookId=5368" target="_blank">James Hansen</a>, <a href="http://science.gsfc.nasa.gov/earth/giss/index.cfm?fuseAction=people.jumpBio&&iPhonebookId=9135" target="_blank">Reto Ruedy<a/>, <a href="http://science.gsfc.nasa.gov/earth/giss/index.cfm?fuseAction=people.jumpBio&&iPhonebookId=19246" target="_blank">Makiko Sato</a> and <a href="http://science.gsfc.nasa.gov/earth/giss/index.cfm?fuseAction=people.jumpBio&&iPhonebookId=21130" target="_blank">Ken Lo</a>. Thanks to <a href="http://science.gsfc.nasa.gov/earth/giss/index.cfm?fuseAction=people.jumpBio&&iPhonebookId=18716" target="_blank">Robert Schmunk</a> for help in obtaining data.</p>
+    
+    <p><strong>First published:</strong> 15 January 2013.
     
     </div>
                         
@@ -49,8 +55,7 @@
     var map = mapbox.map('map');
     var layers = document.getElementById('map-ui');
 
-    map.addLayer(mapbox.layer().id('mapbox.world-light'));
-    map.addLayer(mapbox.layer().id('newscientist26102012.1993-2012'));
+    map.addLayer(mapbox.layer().id('mapbox.world-light,newscientist26102012.1993-2012'));
     map.zoom(3);
   
     map.center({ lat: 50, lon: 0 });
