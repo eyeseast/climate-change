@@ -1,4 +1,4 @@
-compress_assets: on
+compress_assets: off
 gzip_assets: off
 
 javascripts:

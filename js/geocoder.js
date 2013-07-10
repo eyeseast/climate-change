@@ -1,3 +1,5 @@
+;(function(window) {
+
 function Geocoder(key) {
     this.key = key;
     this.$ = jQuery;
@@ -32,3 +34,7 @@ function mapbox_geocode(query, cb) {
         success: cb
     });
 }
+
+window.mapbox_geocode = mapbox_geocode;
+
+})(window);

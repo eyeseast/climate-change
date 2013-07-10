@@ -1,5 +1,5 @@
 // fetch and cache grid data
-
+;(function(window) {
 function Grid(path) {
     // pass in a base path to grid data
     // should be data/grid
@@ -50,3 +50,6 @@ Grid.prototype.getTile = function(lat, lng, cb) {
         }
     });
 };
+
+window.Grid = Grid;
+})(window);

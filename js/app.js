@@ -1,4 +1,4 @@
-(function() {
+;(function() {
 // ensure console
 if (_.isUndefined(window.console)) {
     window.console = {
